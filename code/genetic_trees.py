@@ -35,6 +35,9 @@ class evolution():
         if not os.path.exists(self.TREES_PATH):
             os.makedirs(self.TREES_PATH)
         
+        self.random_train_result = 0
+        self.random_test_result = 0
+
         self.depth = tree_depth
         
         self.VERBOSE = verbose
@@ -65,6 +68,7 @@ class evolution():
         self.simulation.load_prices('data/' + TICKER + INSTRUMENT + '_' + PERIOD_TRAIN[0] + '_' + PERIOD_TRAIN[1] + '.txt', mode = 'train')
         self.simulation.load_prices('data/' + TICKER + INSTRUMENT + '_' + PERIOD_TEST[0] + '_' + PERIOD_TEST[1] + '.txt', mode = 'test')
 
+        self.calc_random_scores()
 
         self.generation = [None for x in xrange(self.GENERATION_SIZE)]
         self.new_generation = [None for x in xrange(self.GENERATION_SIZE)]
@@ -74,7 +78,8 @@ class evolution():
         for i in xrange(self.NUM_GENERATIONS):
             print 'CURRENT GENERATION %d' % (i)
             self.create_new_generation()
-            print 'TEST SCORE %d' % (self.calc_score(0, mode = 'test'))
+            print 'TEST SCORE: %d' % (self.calc_score(0, mode = 'test'))
+            print 'BEST TEST RANDOM SCORE: %d' % (self.random_test_result)
             #if self.generation_scores[0] >= 100:
             #    break
 
@@ -115,7 +120,8 @@ class evolution():
             print self.generation_scores[i],' ',
         #self.generation[0].write_to_file(self.TREES_PATH+'tree_'+str(i)+'_'+str(int(self.generation_scores[0])))
         print '\n'
-
+        print 'BEST TRAIN RANDOM SCORE: %d' % (self.random_train_result)
+            
         #for i in xrange(self.GENERATION_SIZE):
         #   self.new_generation[i].set_genom(self.generation[i].genom)
         
@@ -280,6 +286,25 @@ class evolution():
 
         return result
 
+    def calc_random_scores(self):
+        global MAX_POS
+        global actions,results
+
+
+        for q in xrange(1000):        
+            for i in xrange(self.features_train.shape[0]):
+                actions[i] = np.random.randint(0,3)
+            result, deals = self.simulation.run_simulation(mode = 'train', actions = actions, max_pos = self.MAX_POS)     
+            print q,result
+            self.random_train_result = max(self.random_train_result, result)
+            
+            for i in xrange(self.features_test.shape[0]):
+                actions[i] = np.random.randint(0,3)
+            result, deals = self.simulation.run_simulation(mode = 'test', actions = actions, max_pos = self.MAX_POS)
+            self.random_test_result = max(self.random_test_result, result)
+            
+       
+
     def read_features_period(self, period_start, period_end, mode):
         global PATH, TICKER, INSTRUMENT
         global features_day
@@ -308,7 +333,7 @@ def main():
     actions = np.zeros((200000,), dtype=np.int32)
         
     evo=evolution(tree_depth=2, num_classes=3, generation_size=50, num_generations=100, keep_alive=10.0/50, 
-            feature_change_prob=0.3, sign_change_prob=0.3, class_change_prob=0.2,quantile_bias=30, verbose=True,trees_path='trees/')
+            feature_change_prob=0.3, sign_change_prob=0.3, class_change_prob=0.2,quantile_bias=30, verbose=False,trees_path='trees/')
 
 #import cProfile
 #cProfile.run('main()')
