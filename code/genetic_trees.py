@@ -16,13 +16,14 @@ from simulation import Simulation
 from calc_features import calc_features
 
 
-TICKER = ''
-INSTRUMENT = 'SANDP-500'
+TICKER = 'US2.'
+INSTRUMENT = 'AAPL'
 NUM_FEATURES=50
 PATH = 'features/'
 MAX_POS=5
 PERIOD_TRAIN = ('100101','150101')
 PERIOD_TEST = ('150101','160101')
+FREQUENCY = '1hour'
 MAX_PERIOD_LENGTH = 200000
 
 ###############################################################################################
@@ -31,7 +32,7 @@ class evolution():
 
     def __init__(self, tree_depth, num_classes, generation_size, num_generations,keep_alive, feature_change_prob, sign_change_prob, quantile_bias,verbose,class_change_prob,trees_path):
 
-        self.TREES_PATH = trees_path + INSTRUMENT + '/'
+        self.TREES_PATH = trees_path + INSTRUMENT +  '/' + FREQUENCY + '/'
         if not os.path.exists(self.TREES_PATH):
             os.makedirs(self.TREES_PATH)
         
@@ -65,8 +66,8 @@ class evolution():
             print self.percentiles[i,:]
 
         self.simulation = Simulation()
-        self.simulation.load_prices('data/' + TICKER + INSTRUMENT + '_' + PERIOD_TRAIN[0] + '_' + PERIOD_TRAIN[1] + '.txt', mode = 'train')
-        self.simulation.load_prices('data/' + TICKER + INSTRUMENT + '_' + PERIOD_TEST[0] + '_' + PERIOD_TEST[1] + '.txt', mode = 'test')
+        self.simulation.load_prices('data/' + TICKER + INSTRUMENT + '_' + PERIOD_TRAIN[0] + '_' + PERIOD_TRAIN[1] + '_' + FREQUENCY + '.txt', mode = 'train')
+        self.simulation.load_prices('data/' + TICKER + INSTRUMENT + '_' + PERIOD_TEST[0] + '_' + PERIOD_TEST[1] + '_' + FREQUENCY + '.txt', mode = 'test')
 
         self.calc_random_scores()
 
@@ -306,15 +307,15 @@ class evolution():
        
 
     def read_features_period(self, period_start, period_end, mode):
-        global PATH, TICKER, INSTRUMENT
+        global PATH, TICKER, INSTRUMENT, FREQUENCY
         global features_day
 
-        filename_features = PATH + TICKER + INSTRUMENT+ '_' + period_start + '_' + period_end + '_features.txt'
+        filename_features = PATH + TICKER + INSTRUMENT+ '_' + period_start + '_' + period_end + '_' + FREQUENCY + '_features.txt'
         
         try:
             features_day = np.genfromtxt(filename_features, delimiter=',')
         except Exception:
-            calc_features('data/' + TICKER + INSTRUMENT + '_' + period_start + '_' + period_end + '.txt')
+            calc_features('data/' + TICKER + INSTRUMENT + '_' + period_start + '_' + period_end + '_' + FREQUENCY + '.txt')
             features_day = np.genfromtxt(filename_features, delimiter=',')
 
         print features_day.shape
@@ -332,7 +333,7 @@ def main():
 
     actions = np.zeros((200000,), dtype=np.int32)
         
-    evo=evolution(tree_depth=2, num_classes=3, generation_size=50, num_generations=100, keep_alive=10.0/50, 
+    evo=evolution(tree_depth=2, num_classes=3, generation_size=50, num_generations=50, keep_alive=10.0/50, 
             feature_change_prob=0.3, sign_change_prob=0.3, class_change_prob=0.2,quantile_bias=30, verbose=False,trees_path='trees/')
 
 #import cProfile

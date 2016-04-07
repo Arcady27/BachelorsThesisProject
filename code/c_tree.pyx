@@ -223,7 +223,7 @@ cdef class Tree(object):
 			
 			if self.genom[cur_index].sign == 0:
 
-				if feature_value < thres:
+				if feature_value <= thres:
 					cur_prediction = left
 					cur_index = left_son
 

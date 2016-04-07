@@ -19,12 +19,11 @@ cdef:
 	double EPS = 0.00000001
 
 	vector[double*] features
-	double open_arr[200000]
-	double close_arr[200000]
-	double high_arr[200000]
-	double low_arr[200000]
-	double vol_arr[200000]
-	double true_range[200000]
+	double open_arr[2000000]
+	double close_arr[2000000]
+	double high_arr[2000000]
+	double low_arr[2000000]
+	double vol_arr[2000000]
 	int periods[3]
 
 periods[:] = [10,60,240]
@@ -35,6 +34,7 @@ cdef void read_features(filename):
 		int i
 
 	features = pd.read_csv(filename)
+	print features
 	del features['<TICKER>']
 	del features['<PER>'] 
 	del features['<DATE>'] 
@@ -42,13 +42,14 @@ cdef void read_features(filename):
 
 	features.columns = ['open','high','low','close','vol']
 	SIZE = features.shape[0]
-
+	print SIZE
 	for i in xrange(SIZE):
 		open_arr[i] = features.open[i]
 		close_arr[i] = features.close[i]
 		high_arr[i] = features.high[i]
 		low_arr[i] = features.low[i]
 		vol_arr[i] = features.vol[i]
+	print features
 
 cdef double mean(double *arr, int s, int f):
 	cdef:
@@ -101,30 +102,34 @@ cdef int sign(double x):
 
 cdef void calc_features_cython(filename):
 	global NUM_FEATURES_DEP, NUM_FEATURES_INDEP, PERIODS, SIZE, EPS
-	global open_arr,close_arr,high_arr,low_arr, vol_arr, features, true_range
+	global open_arr,close_arr,high_arr,low_arr, vol_arr, features
 	
 	filename_out = filename.replace('data','features').replace('.txt','')+'_features.txt'
+	print filename_out
+	print PERIODS, SIZE
 	cdef:
 		int p,i,j,q
-		double *smas = <double *>malloc(PERIODS * sizeof(double))
 		double open_= 0.0,close = 0.0,high= 0.0, low= 0.0, vol = 0.0,close_prev = 0.0
 		double sma = 0.0, std = 0.0, highest_high = 0.0, lowest_low = 0.0
 
 		FILE* cfile = fopen(filename_out, "w")
 
 	read_features(filename)
-
-	true_range = <double *>malloc(SIZE * sizeof(double))
 	
-	for p in xrange(PERIODS*NUM_FEATURES_DEP + NUM_FEATURES_INDEP):
+	print PERIODS,SIZE
+	cdef:
+		double *smas = <double *>malloc(PERIODS * sizeof(double))
+		double *true_range = <double *>malloc(SIZE * sizeof(double))
 		
+	print SIZE
+	for p in xrange(PERIODS*NUM_FEATURES_DEP + NUM_FEATURES_INDEP):
 		features.push_back(<double *>malloc(SIZE * sizeof(double)))		
 		
 	for i in xrange(SIZE): 
 		if i%1000==0:
 			print i
 
-		print i
+		#print i
 		for j in xrange(NUM_FEATURES_INDEP + NUM_FEATURES_DEP*PERIODS):
 			features[j][i] = 0.0
 
@@ -154,45 +159,48 @@ cdef void calc_features_cython(filename):
 			true_range[i] = np.max([high - low, high - close_prev, close_prev - low])
 			if i>=t:
 				
-				features[NUM_FEATURES_INDEP + q][i] = ((close_arr[i-t] - close) / close) * 100
-				features[NUM_FEATURES_INDEP + 1 + q][i] = ((vol_arr[i-t] - vol) / (vol + EPS)) * 100
-				features[NUM_FEATURES_INDEP + 2 + q][i] = close_arr[i-t] - close          
-				features[NUM_FEATURES_INDEP + 3 + q][i] = features[NUM_FEATURES_INDEP + 2 + q][i-t] - features[7 + q][i]
-				features[NUM_FEATURES_INDEP + 4 + q][i] = mean(true_range, i-t, i+1) / close
+				features[NUM_FEATURES_INDEP + q][i] = (close - close_arr[i-t]) / (close_arr[i-t] + EPS) #proc
+				features[NUM_FEATURES_INDEP + 1 + q][i] = (vol - vol_arr[i-t]) / (vol_arr[i-t] + EPS) #vroc
+				features[NUM_FEATURES_INDEP + 2 + q][i] = close_arr[i-t] - close          #momentum
+				features[NUM_FEATURES_INDEP + 3 + q][i] = features[NUM_FEATURES_INDEP + 2 + q][i-t] - features[NUM_FEATURES_INDEP + 2 + q][i] #Price acceleration
+				features[NUM_FEATURES_INDEP + 4 + q][i] = mean(true_range, i-t, i+1) / close #natr
 				
-				features[NUM_FEATURES_INDEP + 5 + q][i] = -100*((highest_high - close) / (highest_high - lowest_low + EPS))
+				features[NUM_FEATURES_INDEP + 5 + q][i] = -100*((highest_high - close) / (highest_high - lowest_low + EPS)) #williams %r
 
-				features[NUM_FEATURES_INDEP + 6 + q][i] = features[NUM_FEATURES_INDEP + 6 + q][i-1] + vol * sign(close - close_prev)
+				features[NUM_FEATURES_INDEP + 6 + q][i] = features[NUM_FEATURES_INDEP + 6 + q][i-1] + vol * sign(close - close_prev) #OBV
 				
-				features[NUM_FEATURES_INDEP + 7 + q][i] = ((close - lowest_low) / (highest_high - lowest_low + EPS))*100
-				features[NUM_FEATURES_INDEP + 8 + q][i] = mean(features[NUM_FEATURES_INDEP + 7 + q], i-t, i+1)
-				features[NUM_FEATURES_INDEP + 9 + q][i] = mean(features[NUM_FEATURES_INDEP + 8 + q], i-3, i+1)
-				features[NUM_FEATURES_INDEP + 10 + q][i] = mean(features[NUM_FEATURES_INDEP + 9 + q], i-3, i+1)
+				features[NUM_FEATURES_INDEP + 7 + q][i] = ((close - lowest_low) / (highest_high - lowest_low + EPS))*100 #stoch
+				features[NUM_FEATURES_INDEP + 8 + q][i] = mean(features[NUM_FEATURES_INDEP + 7 + q], i-t, i+1) #F%K
+				features[NUM_FEATURES_INDEP + 9 + q][i] = mean(features[NUM_FEATURES_INDEP + 8 + q], i-3, i+1) #S%K
+				features[NUM_FEATURES_INDEP + 10 + q][i] = mean(features[NUM_FEATURES_INDEP + 9 + q], i-3, i+1) #S%D
 				
-				features[NUM_FEATURES_INDEP + 11 + q][i] = std / sqrt(<double>t)
+				features[NUM_FEATURES_INDEP + 11 + q][i] = std / sqrt(<double>(t)) #volatility
 				
 				middle_band = sma
 				upper_band = middle_band + 2*std
 				lower_band = middle_band - 2*std 
 			
-				features[NUM_FEATURES_INDEP + 12 + q][i] = (close - lower_band) / (upper_band - lower_band)
-				features[NUM_FEATURES_INDEP + 13 + q][i] = upper_band - lower_band
+				features[NUM_FEATURES_INDEP + 12 + q][i] = (close - lower_band) / (upper_band - lower_band) #b%
+				features[NUM_FEATURES_INDEP + 13 + q][i] = upper_band - lower_band #bwidth
 
 			
 		if i >= 1:
-			features[0][i] = features[0][i-1] + vol * ((close - close_prev) / close_prev) 
+			features[0][i] = features[0][i-1] + vol * ((close - close_prev) / close_prev) #PVT
 
-		features[1][i] += vol * ((close - low) - (high - close)) / (high - low + EPS)
-		features[2][i] += 100 * ((high - open_) - (close - low)) / ((high - low + EPS) * 2)
-		features[3][i] = ((smas[0] - smas[PERIODS - 1]) / smas[PERIODS - 1]) * 100
-		features[4][i] = smas[0] - smas[PERIODS - 1]
+		features[1][i] = vol * ((close - low) - (high - close)) / (high - low + EPS) #AD
+		features[2][i] += 100 * ((high - open_) + (close - low)) / ((high - low + EPS) * 2) #accumulation distribution oscillator
+		features[3][i] = ((smas[0] - smas[PERIODS - 1]) / smas[PERIODS - 1]) * 100 #PPO
+		features[4][i] = smas[0] - smas[PERIODS - 1] #MACD
 
 		for j in xrange(NUM_FEATURES_INDEP + NUM_FEATURES_DEP*PERIODS):
 			fprintf(cfile,"%f,",features[j][i])
 		fprintf(cfile,"%f\n",features[j][i])
 
 	fclose(cfile)
-	
+	free(smas)
+	free(true_range)
+	#for i in xrange(PERIODS*NUM_FEATURES_DEP + NUM_FEATURES_INDEP):
+	#	free(features[i])
 
 def calc_features(filename):
 	calc_features_cython(filename)

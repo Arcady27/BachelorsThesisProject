@@ -4599,7 +4599,7 @@ static int __pyx_f_6c_tree_4Tree_predict_cython(struct __pyx_obj_6c_tree_Tree *_
  * 
  * 			if self.genom[cur_index].sign == 0:             # <<<<<<<<<<<<<<
  * 
- * 				if feature_value < thres:
+ * 				if feature_value <= thres:
  */
     if (unlikely(!__pyx_v_self->genom.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");{__pyx_filename = __pyx_f[0]; __pyx_lineno = 224; __pyx_clineno = __LINE__; goto __pyx_L1_error;}}
     __pyx_t_11 = __pyx_v_cur_index;
@@ -4621,16 +4621,16 @@ static int __pyx_f_6c_tree_4Tree_predict_cython(struct __pyx_obj_6c_tree_Tree *_
       /* "c_tree.pyx":226
  * 			if self.genom[cur_index].sign == 0:
  * 
- * 				if feature_value < thres:             # <<<<<<<<<<<<<<
+ * 				if feature_value <= thres:             # <<<<<<<<<<<<<<
  * 					cur_prediction = left
  * 					cur_index = left_son
  */
-      __pyx_t_8 = ((__pyx_v_feature_value < __pyx_v_thres) != 0);
+      __pyx_t_8 = ((__pyx_v_feature_value <= __pyx_v_thres) != 0);
       if (__pyx_t_8) {
 
         /* "c_tree.pyx":227
  * 
- * 				if feature_value < thres:
+ * 				if feature_value <= thres:
  * 					cur_prediction = left             # <<<<<<<<<<<<<<
  * 					cur_index = left_son
  * 
@@ -4638,7 +4638,7 @@ static int __pyx_f_6c_tree_4Tree_predict_cython(struct __pyx_obj_6c_tree_Tree *_
         __pyx_v_cur_prediction = __pyx_v_left;
 
         /* "c_tree.pyx":228
- * 				if feature_value < thres:
+ * 				if feature_value <= thres:
  * 					cur_prediction = left
  * 					cur_index = left_son             # <<<<<<<<<<<<<<
  * 
@@ -4649,7 +4649,7 @@ static int __pyx_f_6c_tree_4Tree_predict_cython(struct __pyx_obj_6c_tree_Tree *_
         /* "c_tree.pyx":226
  * 			if self.genom[cur_index].sign == 0:
  * 
- * 				if feature_value < thres:             # <<<<<<<<<<<<<<
+ * 				if feature_value <= thres:             # <<<<<<<<<<<<<<
  * 					cur_prediction = left
  * 					cur_index = left_son
  */
@@ -4682,7 +4682,7 @@ static int __pyx_f_6c_tree_4Tree_predict_cython(struct __pyx_obj_6c_tree_Tree *_
  * 
  * 			if self.genom[cur_index].sign == 0:             # <<<<<<<<<<<<<<
  * 
- * 				if feature_value < thres:
+ * 				if feature_value <= thres:
  */
       goto __pyx_L6;
     }
