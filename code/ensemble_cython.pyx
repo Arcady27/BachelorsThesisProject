@@ -50,7 +50,7 @@ cdef class evolution(object):
 		int*  predictions_test
 		
 		int*  weights
-
+		results
 	cdef:
 		features_train, features_test, simulation
 
@@ -59,7 +59,7 @@ cdef class evolution(object):
 
 	def __init__(self, tree_depth, num_classes, keep_alive, generation_size, num_generations,verbose, mutation_prob, max_weight,folder):
 
-		self.depth = tree_depth
+		self.depth = tree_depth - 1
 		
 		self.VERBOSE = verbose
 		self.NUM_CLASSES = num_classes
@@ -87,6 +87,7 @@ cdef class evolution(object):
 		self.GENOM_LENGTH = self.NUM_TREES
 		print self.files
 		
+		self.results = np.zeros((200000,2), dtype = np.float32)
 		self.weights = <int *>malloc(self.GENOM_LENGTH * sizeof(int))
 		self.predictions_train = <int *>malloc(self.features_train.shape[0] * self.NUM_TREES * sizeof(int))
 		self.predictions_test = <int *>malloc(self.features_test.shape[0] * self.NUM_TREES * sizeof(int))
@@ -138,7 +139,15 @@ cdef class evolution(object):
 			self.create_new_generation()
 			if self.MUTATION_PROB > 0.05:
 				self.MUTATION_PROB -= 0.01
-			print 'TEST SCORE %d' % (self.calc_score(0, mode = 'test'))
+			
+			test_score = self.calc_score(0, mode = 'test')
+			print 'TEST SCORE %d' % (test_score)
+			
+			self.results[i, 0] = self.generation_scores[0]
+			self.results[i, 1] = test_score
+			print self.results
+
+		self.results[0:i, :].tofile('results/results_ensemble_' + INSTRUMENT + '_' + FREQUENCY + '.txt')
 
 		for i in xrange(self.THRESHOLD):
 			print self.generation_scores[i],' ',
@@ -370,7 +379,7 @@ def main():
 
 	actions = np.zeros((200000,), dtype=np.int32)
 	
-	evo  = evolution(tree_depth=2, num_classes=3, generation_size=100, num_generations=10, keep_alive=10.0/50, verbose=True, 
+	evo  = evolution(tree_depth=3, num_classes=3, generation_size=100, num_generations=10, keep_alive=10.0/50, verbose=True, 
 		mutation_prob=0.05,max_weight=2,folder=['trees/'])
 	evo.finish()
 

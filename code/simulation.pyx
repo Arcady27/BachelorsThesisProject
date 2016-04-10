@@ -7,7 +7,9 @@ cdef class Simulation(object):
 		double open_test[200000], close_test[200000], high_test[200000], low_test[200000]
 		double open_train[200000], close_train[200000], high_train[200000], low_train[200000]
 		int SIZE_TRAIN, SIZE_TEST
+		double buy_and_hold_train, buy_and_hold_test
 		results
+	
 	
 	def __init__(self, int size_train = 200000, int size_test=100000):
 		self.SIZE_TRAIN = size_train
@@ -40,6 +42,9 @@ cdef class Simulation(object):
 				self.high_test[i] = features.high[i]
 				self.low_test[i] = features.low[i]
 			
+		self.buy_and_hold_train = self.close_train[self.SIZE_TRAIN - 1] - self.close_train[0]
+		self.buy_and_hold_test = self.close_test[self.SIZE_TEST - 1] - self.close_test[0]
+
 
 	def load_prices(self,filename, mode):
 		self.load_prices_cython(filename, mode)
@@ -129,10 +134,13 @@ cdef class Simulation(object):
 				res += pos*price'''
 
 			deals += abs(pos)
-			self.results[0:i].tofile('results.txt')
+			#self.results[0:i].tofile('results/results_' + filename + '_' + mode + '.txt')
 
 		return [res,deals]
 
 	def run_simulation(self, mode, actions, max_pos = 10):
 		res_arr = self.run_simulation_cython(mode, actions, max_pos)
 		return res_arr
+
+	def get_buy_and_hold(self):
+		return [self.buy_and_hold_train, self.buy_and_hold_test]

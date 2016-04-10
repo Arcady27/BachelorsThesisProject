@@ -16,8 +16,8 @@ from simulation import Simulation
 from calc_features import calc_features
 
 
-TICKER = 'US2.'
-INSTRUMENT = 'AAPL'
+TICKER = ''
+INSTRUMENT = 'SANDP-500'
 NUM_FEATURES=50
 PATH = 'features/'
 MAX_POS=5
@@ -39,7 +39,7 @@ class evolution():
         self.random_train_result = 0
         self.random_test_result = 0
 
-        self.depth = tree_depth
+        self.depth = tree_depth - 1
         
         self.VERBOSE = verbose
         self.NUM_CLASSES = num_classes
@@ -60,6 +60,8 @@ class evolution():
         self.NUM_FEATURES = self.features_train.shape[1]
         
         self.percentiles = np.zeros((self.NUM_FEATURES, 101), dtype = np.float32)
+        self.results = np.zeros((200000,2),dtype = np.float32)
+
         for i in xrange(self.NUM_FEATURES):
             for j in xrange(101):
                 self.percentiles[i,j] = np.percentile(self.features_train[:, i], j)
@@ -70,7 +72,7 @@ class evolution():
         self.simulation.load_prices('data/' + TICKER + INSTRUMENT + '_' + PERIOD_TEST[0] + '_' + PERIOD_TEST[1] + '_' + FREQUENCY + '.txt', mode = 'test')
 
         self.calc_random_scores()
-
+        self.buy_and_hold = self.simulation.get_buy_and_hold()
         self.generation = [None for x in xrange(self.GENERATION_SIZE)]
         self.new_generation = [None for x in xrange(self.GENERATION_SIZE)]
         self.generation_scores = [0 for x in xrange(self.GENERATION_SIZE)]
@@ -79,12 +81,17 @@ class evolution():
         for i in xrange(self.NUM_GENERATIONS):
             print 'CURRENT GENERATION %d' % (i)
             self.create_new_generation()
-            print 'TEST SCORE: %d' % (self.calc_score(0, mode = 'test'))
+            test_score = self.calc_score(0, mode = 'test')
+            print 'TEST SCORE: %d' % (test_score)
             print 'BEST TEST RANDOM SCORE: %d' % (self.random_test_result)
-            #if self.generation_scores[0] >= 100:
-            #    break
+            print 'BUY_AND_HOLD ', self.buy_and_hold
 
-        
+            self.results[i, 0] = self.generation_scores[0]
+            self.results[i, 1] = test_score
+            print self.results[i,:]
+
+        self.results[0:i, :].tofile('results/results_' + INSTRUMENT + '_' + FREQUENCY + '.txt')
+
         for i in xrange(self.THRESHOLD):
             print self.generation_scores[i],' ',
             self.generation[i].write_to_file(self.TREES_PATH+'tree_'+str(i)+'_'+str(int(self.generation_scores[0])))
@@ -140,7 +147,7 @@ class evolution():
                 print 'PARENT B: %d' % parent2
                 self.generation[parent2].print_tree()
 
-            child = self.make_child_subtrees(self.generation[parent1], self.generation[parent2])
+            child = self.make_child_random(self.generation[parent1], self.generation[parent2])
             self.generation[i].set_genom(child.genom)
                 
             if self.VERBOSE:
@@ -333,7 +340,7 @@ def main():
 
     actions = np.zeros((200000,), dtype=np.int32)
         
-    evo=evolution(tree_depth=2, num_classes=3, generation_size=50, num_generations=50, keep_alive=10.0/50, 
+    evo=evolution(tree_depth=3, num_classes=3, generation_size=50, num_generations=200, keep_alive=20.0/50, 
             feature_change_prob=0.3, sign_change_prob=0.3, class_change_prob=0.2,quantile_bias=30, verbose=False,trees_path='trees/')
 
 #import cProfile

@@ -492,6 +492,8 @@ struct __pyx_obj_10simulation_Simulation {
   double low_train[0x30D40];
   int SIZE_TRAIN;
   int SIZE_TEST;
+  double buy_and_hold_train;
+  double buy_and_hold_test;
   PyObject *results;
 };
 
@@ -685,11 +687,6 @@ static CYTHON_INLINE int __Pyx_SetItemInt_Generic(PyObject *o, PyObject *j, PyOb
 static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObject *v,
                                                int is_list, int wraparound, int boundscheck);
 
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(
-        PyObject* obj, Py_ssize_t cstart, Py_ssize_t cstop,
-        PyObject** py_start, PyObject** py_stop, PyObject** py_slice,
-        int has_cstart, int has_cstop, int wraparound);
-
 static int __Pyx_SetVtable(PyObject *dict, void *vtable);
 
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
@@ -756,7 +753,6 @@ static char __pyx_k_TICKER[] = "<TICKER>";
 static char __pyx_k_import[] = "__import__";
 static char __pyx_k_pandas[] = "pandas";
 static char __pyx_k_test_2[] = "__test__";
-static char __pyx_k_tofile[] = "tofile";
 static char __pyx_k_xrange[] = "xrange";
 static char __pyx_k_actions[] = "actions";
 static char __pyx_k_columns[] = "columns";
@@ -767,7 +763,6 @@ static char __pyx_k_read_csv[] = "read_csv";
 static char __pyx_k_size_test[] = "size_test";
 static char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static char __pyx_k_size_train[] = "size_train";
-static char __pyx_k_results_txt[] = "results.txt";
 static PyObject *__pyx_kp_s_DATE;
 static PyObject *__pyx_kp_s_PER;
 static PyObject *__pyx_kp_s_TICKER;
@@ -792,13 +787,11 @@ static PyObject *__pyx_n_s_pd;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_read_csv;
-static PyObject *__pyx_kp_s_results_txt;
 static PyObject *__pyx_n_s_shape;
 static PyObject *__pyx_n_s_size_test;
 static PyObject *__pyx_n_s_size_train;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_test_2;
-static PyObject *__pyx_n_s_tofile;
 static PyObject *__pyx_n_s_train;
 static PyObject *__pyx_n_s_vol;
 static PyObject *__pyx_n_s_xrange;
@@ -806,6 +799,7 @@ static PyObject *__pyx_n_s_zeros;
 static int __pyx_pf_10simulation_10Simulation___init__(struct __pyx_obj_10simulation_Simulation *__pyx_v_self, int __pyx_v_size_train, int __pyx_v_size_test); /* proto */
 static PyObject *__pyx_pf_10simulation_10Simulation_2load_prices(struct __pyx_obj_10simulation_Simulation *__pyx_v_self, PyObject *__pyx_v_filename, PyObject *__pyx_v_mode); /* proto */
 static PyObject *__pyx_pf_10simulation_10Simulation_4run_simulation(struct __pyx_obj_10simulation_Simulation *__pyx_v_self, PyObject *__pyx_v_mode, PyObject *__pyx_v_actions, PyObject *__pyx_v_max_pos); /* proto */
+static PyObject *__pyx_pf_10simulation_10Simulation_6get_buy_and_hold(struct __pyx_obj_10simulation_Simulation *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_10simulation_Simulation(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
@@ -813,10 +807,9 @@ static PyObject *__pyx_int_10;
 static PyObject *__pyx_int_200000;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
-static PyObject *__pyx_tuple__3;
 
-/* "simulation.pyx":12
- * 		results
+/* "simulation.pyx":14
+ * 
  * 
  * 	def __init__(self, int size_train = 200000, int size_test=100000):             # <<<<<<<<<<<<<<
  * 		self.SIZE_TRAIN = size_train
@@ -860,7 +853,7 @@ static int __pyx_pw_10simulation_10Simulation_1__init__(PyObject *__pyx_v_self, 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -871,19 +864,19 @@ static int __pyx_pw_10simulation_10Simulation_1__init__(PyObject *__pyx_v_self, 
       }
     }
     if (values[0]) {
-      __pyx_v_size_train = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_size_train == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_size_train = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_size_train == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_size_train = ((int)0x30D40);
     }
     if (values[1]) {
-      __pyx_v_size_test = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_size_test == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_size_test = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_size_test == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_size_test = ((int)0x186A0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("simulation.Simulation.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -901,7 +894,7 @@ static int __pyx_pf_10simulation_10Simulation___init__(struct __pyx_obj_10simula
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "simulation.pyx":13
+  /* "simulation.pyx":15
  * 
  * 	def __init__(self, int size_train = 200000, int size_test=100000):
  * 		self.SIZE_TRAIN = size_train             # <<<<<<<<<<<<<<
@@ -910,7 +903,7 @@ static int __pyx_pf_10simulation_10Simulation___init__(struct __pyx_obj_10simula
  */
   __pyx_v_self->SIZE_TRAIN = __pyx_v_size_train;
 
-  /* "simulation.pyx":14
+  /* "simulation.pyx":16
  * 	def __init__(self, int size_train = 200000, int size_test=100000):
  * 		self.SIZE_TRAIN = size_train
  * 		self.SIZE_TEST = size_test             # <<<<<<<<<<<<<<
@@ -919,8 +912,8 @@ static int __pyx_pf_10simulation_10Simulation___init__(struct __pyx_obj_10simula
  */
   __pyx_v_self->SIZE_TEST = __pyx_v_size_test;
 
-  /* "simulation.pyx":12
- * 		results
+  /* "simulation.pyx":14
+ * 
  * 
  * 	def __init__(self, int size_train = 200000, int size_test=100000):             # <<<<<<<<<<<<<<
  * 		self.SIZE_TRAIN = size_train
@@ -933,7 +926,7 @@ static int __pyx_pf_10simulation_10Simulation___init__(struct __pyx_obj_10simula
   return __pyx_r;
 }
 
-/* "simulation.pyx":16
+/* "simulation.pyx":18
  * 		self.SIZE_TEST = size_test
  * 
  * 	cdef void load_prices_cython(self, filename, mode):             # <<<<<<<<<<<<<<
@@ -958,16 +951,16 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("load_prices_cython", 0);
 
-  /* "simulation.pyx":17
+  /* "simulation.pyx":19
  * 
  * 	cdef void load_prices_cython(self, filename, mode):
  * 		features = pd.read_csv(filename)             # <<<<<<<<<<<<<<
  * 		del features['<TICKER>']
  * 		del features['<PER>']
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_pd); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_pd); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_read_csv); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_read_csv); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -981,16 +974,16 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
     }
   }
   if (!__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_filename); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_filename); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2); __pyx_t_2 = NULL;
     __Pyx_INCREF(__pyx_v_filename);
     __Pyx_GIVEREF(__pyx_v_filename);
     PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_filename);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
@@ -998,50 +991,50 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
   __pyx_v_features = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "simulation.pyx":18
+  /* "simulation.pyx":20
  * 	cdef void load_prices_cython(self, filename, mode):
  * 		features = pd.read_csv(filename)
  * 		del features['<TICKER>']             # <<<<<<<<<<<<<<
  * 		del features['<PER>']
  * 		del features['<DATE>']
  */
-  if (PyObject_DelItem(__pyx_v_features, __pyx_kp_s_TICKER) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 18; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_DelItem(__pyx_v_features, __pyx_kp_s_TICKER) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "simulation.pyx":19
+  /* "simulation.pyx":21
  * 		features = pd.read_csv(filename)
  * 		del features['<TICKER>']
  * 		del features['<PER>']             # <<<<<<<<<<<<<<
  * 		del features['<DATE>']
  * 		del features['<TIME>']
  */
-  if (PyObject_DelItem(__pyx_v_features, __pyx_kp_s_PER) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_DelItem(__pyx_v_features, __pyx_kp_s_PER) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "simulation.pyx":20
+  /* "simulation.pyx":22
  * 		del features['<TICKER>']
  * 		del features['<PER>']
  * 		del features['<DATE>']             # <<<<<<<<<<<<<<
  * 		del features['<TIME>']
  * 
  */
-  if (PyObject_DelItem(__pyx_v_features, __pyx_kp_s_DATE) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_DelItem(__pyx_v_features, __pyx_kp_s_DATE) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "simulation.pyx":21
+  /* "simulation.pyx":23
  * 		del features['<PER>']
  * 		del features['<DATE>']
  * 		del features['<TIME>']             # <<<<<<<<<<<<<<
  * 
  * 		features.columns = ['open','high','low','close','vol']
  */
-  if (PyObject_DelItem(__pyx_v_features, __pyx_kp_s_TIME) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_DelItem(__pyx_v_features, __pyx_kp_s_TIME) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "simulation.pyx":23
+  /* "simulation.pyx":25
  * 		del features['<TIME>']
  * 
  * 		features.columns = ['open','high','low','close','vol']             # <<<<<<<<<<<<<<
  * 
  * 		if mode == 'train':
  */
-  __pyx_t_1 = PyList_New(5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyList_New(5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_open);
   __Pyx_GIVEREF(__pyx_n_s_open);
@@ -1058,36 +1051,36 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
   __Pyx_INCREF(__pyx_n_s_vol);
   __Pyx_GIVEREF(__pyx_n_s_vol);
   PyList_SET_ITEM(__pyx_t_1, 4, __pyx_n_s_vol);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_features, __pyx_n_s_columns, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_features, __pyx_n_s_columns, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "simulation.pyx":25
+  /* "simulation.pyx":27
  * 		features.columns = ['open','high','low','close','vol']
  * 
  * 		if mode == 'train':             # <<<<<<<<<<<<<<
  * 			self.SIZE_TRAIN = features.shape[0]
  * 
  */
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_train, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_train, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_5) {
 
-    /* "simulation.pyx":26
+    /* "simulation.pyx":28
  * 
  * 		if mode == 'train':
  * 			self.SIZE_TRAIN = features.shape[0]             # <<<<<<<<<<<<<<
  * 
  * 			for i in xrange(self.SIZE_TRAIN):
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_self->SIZE_TRAIN = __pyx_t_6;
 
-    /* "simulation.pyx":28
+    /* "simulation.pyx":30
  * 			self.SIZE_TRAIN = features.shape[0]
  * 
  * 			for i in xrange(self.SIZE_TRAIN):             # <<<<<<<<<<<<<<
@@ -1098,72 +1091,72 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
     for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
       __pyx_v_i = __pyx_t_7;
 
-      /* "simulation.pyx":29
+      /* "simulation.pyx":31
  * 
  * 			for i in xrange(self.SIZE_TRAIN):
  * 				self.open_train[i] = features.open[i]             # <<<<<<<<<<<<<<
  * 				self.close_train[i] = features.close[i]
  * 				self.high_train[i] = features.high[i]
  */
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_open); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      (__pyx_v_self->open_train[__pyx_v_i]) = __pyx_t_8;
-
-      /* "simulation.pyx":30
- * 			for i in xrange(self.SIZE_TRAIN):
- * 				self.open_train[i] = features.open[i]
- * 				self.close_train[i] = features.close[i]             # <<<<<<<<<<<<<<
- * 				self.high_train[i] = features.high[i]
- * 				self.low_train[i] = features.low[i]
- */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_close); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      (__pyx_v_self->close_train[__pyx_v_i]) = __pyx_t_8;
-
-      /* "simulation.pyx":31
- * 				self.open_train[i] = features.open[i]
- * 				self.close_train[i] = features.close[i]
- * 				self.high_train[i] = features.high[i]             # <<<<<<<<<<<<<<
- * 				self.low_train[i] = features.low[i]
- * 		else:
- */
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_high); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_open); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      (__pyx_v_self->high_train[__pyx_v_i]) = __pyx_t_8;
+      (__pyx_v_self->open_train[__pyx_v_i]) = __pyx_t_8;
 
       /* "simulation.pyx":32
- * 				self.close_train[i] = features.close[i]
+ * 			for i in xrange(self.SIZE_TRAIN):
+ * 				self.open_train[i] = features.open[i]
+ * 				self.close_train[i] = features.close[i]             # <<<<<<<<<<<<<<
  * 				self.high_train[i] = features.high[i]
- * 				self.low_train[i] = features.low[i]             # <<<<<<<<<<<<<<
- * 		else:
- * 			self.SIZE_TEST = features.shape[0]
+ * 				self.low_train[i] = features.low[i]
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_low); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_close); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      (__pyx_v_self->close_train[__pyx_v_i]) = __pyx_t_8;
+
+      /* "simulation.pyx":33
+ * 				self.open_train[i] = features.open[i]
+ * 				self.close_train[i] = features.close[i]
+ * 				self.high_train[i] = features.high[i]             # <<<<<<<<<<<<<<
+ * 				self.low_train[i] = features.low[i]
+ * 		else:
+ */
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_high); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      (__pyx_v_self->high_train[__pyx_v_i]) = __pyx_t_8;
+
+      /* "simulation.pyx":34
+ * 				self.close_train[i] = features.close[i]
+ * 				self.high_train[i] = features.high[i]
+ * 				self.low_train[i] = features.low[i]             # <<<<<<<<<<<<<<
+ * 		else:
+ * 			self.SIZE_TEST = features.shape[0]
+ */
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_low); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       (__pyx_v_self->low_train[__pyx_v_i]) = __pyx_t_8;
     }
 
-    /* "simulation.pyx":25
+    /* "simulation.pyx":27
  * 		features.columns = ['open','high','low','close','vol']
  * 
  * 		if mode == 'train':             # <<<<<<<<<<<<<<
@@ -1173,7 +1166,7 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
     goto __pyx_L3;
   }
 
-  /* "simulation.pyx":34
+  /* "simulation.pyx":36
  * 				self.low_train[i] = features.low[i]
  * 		else:
  * 			self.SIZE_TEST = features.shape[0]             # <<<<<<<<<<<<<<
@@ -1181,37 +1174,37 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
  * 
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_self->SIZE_TEST = __pyx_t_6;
 
-    /* "simulation.pyx":35
+    /* "simulation.pyx":37
  * 		else:
  * 			self.SIZE_TEST = features.shape[0]
  * 			self.results = np.zeros((200000,),dtype = np.float32)             # <<<<<<<<<<<<<<
  * 
  * 			for i in xrange(self.SIZE_TEST):
  */
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, __pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, __pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -1221,7 +1214,7 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
     __pyx_v_self->results = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "simulation.pyx":37
+    /* "simulation.pyx":39
  * 			self.results = np.zeros((200000,),dtype = np.float32)
  * 
  * 			for i in xrange(self.SIZE_TEST):             # <<<<<<<<<<<<<<
@@ -1232,74 +1225,92 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
     for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
       __pyx_v_i = __pyx_t_7;
 
-      /* "simulation.pyx":38
+      /* "simulation.pyx":40
  * 
  * 			for i in xrange(self.SIZE_TEST):
  * 				self.open_test[i] = features.open[i]             # <<<<<<<<<<<<<<
  * 				self.close_test[i] = features.close[i]
  * 				self.high_test[i] = features.high[i]
  */
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_open); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_2, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      (__pyx_v_self->open_test[__pyx_v_i]) = __pyx_t_8;
-
-      /* "simulation.pyx":39
- * 			for i in xrange(self.SIZE_TEST):
- * 				self.open_test[i] = features.open[i]
- * 				self.close_test[i] = features.close[i]             # <<<<<<<<<<<<<<
- * 				self.high_test[i] = features.high[i]
- * 				self.low_test[i] = features.low[i]
- */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_close); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      (__pyx_v_self->close_test[__pyx_v_i]) = __pyx_t_8;
-
-      /* "simulation.pyx":40
- * 				self.open_test[i] = features.open[i]
- * 				self.close_test[i] = features.close[i]
- * 				self.high_test[i] = features.high[i]             # <<<<<<<<<<<<<<
- * 				self.low_test[i] = features.low[i]
- * 
- */
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_high); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_open); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_2, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      (__pyx_v_self->high_test[__pyx_v_i]) = __pyx_t_8;
+      (__pyx_v_self->open_test[__pyx_v_i]) = __pyx_t_8;
 
       /* "simulation.pyx":41
- * 				self.close_test[i] = features.close[i]
+ * 			for i in xrange(self.SIZE_TEST):
+ * 				self.open_test[i] = features.open[i]
+ * 				self.close_test[i] = features.close[i]             # <<<<<<<<<<<<<<
  * 				self.high_test[i] = features.high[i]
- * 				self.low_test[i] = features.low[i]             # <<<<<<<<<<<<<<
- * 
- * 
+ * 				self.low_test[i] = features.low[i]
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_low); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_close); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      (__pyx_v_self->close_test[__pyx_v_i]) = __pyx_t_8;
+
+      /* "simulation.pyx":42
+ * 				self.open_test[i] = features.open[i]
+ * 				self.close_test[i] = features.close[i]
+ * 				self.high_test[i] = features.high[i]             # <<<<<<<<<<<<<<
+ * 				self.low_test[i] = features.low[i]
+ * 
+ */
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_high); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_2, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      (__pyx_v_self->high_test[__pyx_v_i]) = __pyx_t_8;
+
+      /* "simulation.pyx":43
+ * 				self.close_test[i] = features.close[i]
+ * 				self.high_test[i] = features.high[i]
+ * 				self.low_test[i] = features.low[i]             # <<<<<<<<<<<<<<
+ * 
+ * 		self.buy_and_hold_train = self.close_train[self.SIZE_TRAIN - 1] - self.close_train[0]
+ */
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_features, __pyx_n_s_low); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       (__pyx_v_self->low_test[__pyx_v_i]) = __pyx_t_8;
     }
   }
   __pyx_L3:;
 
-  /* "simulation.pyx":16
+  /* "simulation.pyx":45
+ * 				self.low_test[i] = features.low[i]
+ * 
+ * 		self.buy_and_hold_train = self.close_train[self.SIZE_TRAIN - 1] - self.close_train[0]             # <<<<<<<<<<<<<<
+ * 		self.buy_and_hold_test = self.close_test[self.SIZE_TEST - 1] - self.close_test[0]
+ * 
+ */
+  __pyx_v_self->buy_and_hold_train = ((__pyx_v_self->close_train[(__pyx_v_self->SIZE_TRAIN - 1)]) - (__pyx_v_self->close_train[0]));
+
+  /* "simulation.pyx":46
+ * 
+ * 		self.buy_and_hold_train = self.close_train[self.SIZE_TRAIN - 1] - self.close_train[0]
+ * 		self.buy_and_hold_test = self.close_test[self.SIZE_TEST - 1] - self.close_test[0]             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->buy_and_hold_test = ((__pyx_v_self->close_test[(__pyx_v_self->SIZE_TEST - 1)]) - (__pyx_v_self->close_test[0]));
+
+  /* "simulation.pyx":18
  * 		self.SIZE_TEST = size_test
  * 
  * 	cdef void load_prices_cython(self, filename, mode):             # <<<<<<<<<<<<<<
@@ -1320,7 +1331,7 @@ static void __pyx_f_10simulation_10Simulation_load_prices_cython(struct __pyx_ob
   __Pyx_RefNannyFinishContext();
 }
 
-/* "simulation.pyx":44
+/* "simulation.pyx":49
  * 
  * 
  * 	def load_prices(self,filename, mode):             # <<<<<<<<<<<<<<
@@ -1359,11 +1370,11 @@ static PyObject *__pyx_pw_10simulation_10Simulation_3load_prices(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mode)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("load_prices", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("load_prices", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "load_prices") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "load_prices") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1376,7 +1387,7 @@ static PyObject *__pyx_pw_10simulation_10Simulation_3load_prices(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("load_prices", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("load_prices", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("simulation.Simulation.load_prices", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1394,7 +1405,7 @@ static PyObject *__pyx_pf_10simulation_10Simulation_2load_prices(struct __pyx_ob
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("load_prices", 0);
 
-  /* "simulation.pyx":45
+  /* "simulation.pyx":50
  * 
  * 	def load_prices(self,filename, mode):
  * 		self.load_prices_cython(filename, mode)             # <<<<<<<<<<<<<<
@@ -1403,7 +1414,7 @@ static PyObject *__pyx_pf_10simulation_10Simulation_2load_prices(struct __pyx_ob
  */
   ((struct __pyx_vtabstruct_10simulation_Simulation *)__pyx_v_self->__pyx_vtab)->load_prices_cython(__pyx_v_self, __pyx_v_filename, __pyx_v_mode);
 
-  /* "simulation.pyx":44
+  /* "simulation.pyx":49
  * 
  * 
  * 	def load_prices(self,filename, mode):             # <<<<<<<<<<<<<<
@@ -1418,7 +1429,7 @@ static PyObject *__pyx_pf_10simulation_10Simulation_2load_prices(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "simulation.pyx":47
+/* "simulation.pyx":52
  * 		self.load_prices_cython(filename, mode)
  * 
  * 	cdef run_simulation_cython(self, mode, actions, int max_pos):             # <<<<<<<<<<<<<<
@@ -1449,7 +1460,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("run_simulation_cython", 0);
 
-  /* "simulation.pyx":50
+  /* "simulation.pyx":55
  * 		cdef:
  * 			int i
  * 			int pos = 0             # <<<<<<<<<<<<<<
@@ -1458,7 +1469,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
   __pyx_v_pos = 0;
 
-  /* "simulation.pyx":51
+  /* "simulation.pyx":56
  * 			int i
  * 			int pos = 0
  * 			int prev_pos = 0             # <<<<<<<<<<<<<<
@@ -1467,7 +1478,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
   __pyx_v_prev_pos = 0;
 
-  /* "simulation.pyx":52
+  /* "simulation.pyx":57
  * 			int pos = 0
  * 			int prev_pos = 0
  * 			int delta_pos = 0             # <<<<<<<<<<<<<<
@@ -1476,7 +1487,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
   __pyx_v_delta_pos = 0;
 
-  /* "simulation.pyx":53
+  /* "simulation.pyx":58
  * 			int prev_pos = 0
  * 			int delta_pos = 0
  * 			double delta_price = 0             # <<<<<<<<<<<<<<
@@ -1485,7 +1496,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
   __pyx_v_delta_price = 0.0;
 
-  /* "simulation.pyx":54
+  /* "simulation.pyx":59
  * 			int delta_pos = 0
  * 			double delta_price = 0
  * 			int deals = 0             # <<<<<<<<<<<<<<
@@ -1494,7 +1505,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
   __pyx_v_deals = 0;
 
-  /* "simulation.pyx":56
+  /* "simulation.pyx":61
  * 			int deals = 0
  * 			double price
  * 			double res = 0.0             # <<<<<<<<<<<<<<
@@ -1503,17 +1514,17 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
   __pyx_v_res = 0.0;
 
-  /* "simulation.pyx":59
+  /* "simulation.pyx":64
  * 			double res_arr[2]
  * 
  * 		if mode == 'train':             # <<<<<<<<<<<<<<
  * 			for i in xrange(1,self.SIZE_TRAIN):
  * 
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_train, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_train, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_1) {
 
-    /* "simulation.pyx":60
+    /* "simulation.pyx":65
  * 
  * 		if mode == 'train':
  * 			for i in xrange(1,self.SIZE_TRAIN):             # <<<<<<<<<<<<<<
@@ -1524,7 +1535,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
     for (__pyx_t_3 = 1; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "simulation.pyx":62
+      /* "simulation.pyx":67
  * 			for i in xrange(1,self.SIZE_TRAIN):
  * 
  * 				delta_price = (self.low_train[i] + self.high_train[i])/2.0 - (self.low_train[i-1] + self.high_train[i-1])/2.0             # <<<<<<<<<<<<<<
@@ -1533,7 +1544,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
       __pyx_v_delta_price = ((((__pyx_v_self->low_train[__pyx_v_i]) + (__pyx_v_self->high_train[__pyx_v_i])) / 2.0) - (((__pyx_v_self->low_train[(__pyx_v_i - 1)]) + (__pyx_v_self->high_train[(__pyx_v_i - 1)])) / 2.0));
 
-      /* "simulation.pyx":63
+      /* "simulation.pyx":68
  * 
  * 				delta_price = (self.low_train[i] + self.high_train[i])/2.0 - (self.low_train[i-1] + self.high_train[i-1])/2.0
  * 				delta_pos = pos - prev_pos             # <<<<<<<<<<<<<<
@@ -1542,7 +1553,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
       __pyx_v_delta_pos = (__pyx_v_pos - __pyx_v_prev_pos);
 
-      /* "simulation.pyx":64
+      /* "simulation.pyx":69
  * 				delta_price = (self.low_train[i] + self.high_train[i])/2.0 - (self.low_train[i-1] + self.high_train[i-1])/2.0
  * 				delta_pos = pos - prev_pos
  * 				res += delta_pos*delta_price             # <<<<<<<<<<<<<<
@@ -1551,7 +1562,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
       __pyx_v_res = (__pyx_v_res + (__pyx_v_delta_pos * __pyx_v_delta_price));
 
-      /* "simulation.pyx":66
+      /* "simulation.pyx":71
  * 				res += delta_pos*delta_price
  * 
  * 				prev_pos = pos             # <<<<<<<<<<<<<<
@@ -1560,23 +1571,23 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
       __pyx_v_prev_pos = __pyx_v_pos;
 
-      /* "simulation.pyx":68
+      /* "simulation.pyx":73
  * 				prev_pos = pos
  * 
  * 				if actions[i] == 1:             # <<<<<<<<<<<<<<
  * 					#buy
  * 					if pos > max_pos:
  */
-      __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_actions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_actions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = __Pyx_PyInt_EqObjC(__pyx_t_4, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __Pyx_PyInt_EqObjC(__pyx_t_4, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       if (__pyx_t_1) {
 
-        /* "simulation.pyx":70
+        /* "simulation.pyx":75
  * 				if actions[i] == 1:
  * 					#buy
  * 					if pos > max_pos:             # <<<<<<<<<<<<<<
@@ -1586,7 +1597,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
         __pyx_t_1 = ((__pyx_v_pos > __pyx_v_max_pos) != 0);
         if (__pyx_t_1) {
 
-          /* "simulation.pyx":71
+          /* "simulation.pyx":76
  * 					#buy
  * 					if pos > max_pos:
  * 						continue             # <<<<<<<<<<<<<<
@@ -1595,7 +1606,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
           goto __pyx_L4_continue;
 
-          /* "simulation.pyx":70
+          /* "simulation.pyx":75
  * 				if actions[i] == 1:
  * 					#buy
  * 					if pos > max_pos:             # <<<<<<<<<<<<<<
@@ -1604,7 +1615,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         }
 
-        /* "simulation.pyx":74
+        /* "simulation.pyx":79
  * 
  * 					#res -= self.high_train[i]
  * 					pos += 1             # <<<<<<<<<<<<<<
@@ -1613,7 +1624,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         __pyx_v_pos = (__pyx_v_pos + 1);
 
-        /* "simulation.pyx":75
+        /* "simulation.pyx":80
  * 					#res -= self.high_train[i]
  * 					pos += 1
  * 					deals += 1             # <<<<<<<<<<<<<<
@@ -1622,7 +1633,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         __pyx_v_deals = (__pyx_v_deals + 1);
 
-        /* "simulation.pyx":68
+        /* "simulation.pyx":73
  * 				prev_pos = pos
  * 
  * 				if actions[i] == 1:             # <<<<<<<<<<<<<<
@@ -1632,23 +1643,23 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
         goto __pyx_L6;
       }
 
-      /* "simulation.pyx":77
+      /* "simulation.pyx":82
  * 					deals += 1
  * 
  * 				elif actions[i] == 2:             # <<<<<<<<<<<<<<
  * 					#sell
  * 					if pos < -max_pos:
  */
-      __pyx_t_5 = __Pyx_GetItemInt(__pyx_v_actions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __pyx_t_5 = __Pyx_GetItemInt(__pyx_v_actions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 82; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_t_5, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_t_5, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 82; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 82; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_1) {
 
-        /* "simulation.pyx":79
+        /* "simulation.pyx":84
  * 				elif actions[i] == 2:
  * 					#sell
  * 					if pos < -max_pos:             # <<<<<<<<<<<<<<
@@ -1658,7 +1669,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
         __pyx_t_1 = ((__pyx_v_pos < (-__pyx_v_max_pos)) != 0);
         if (__pyx_t_1) {
 
-          /* "simulation.pyx":80
+          /* "simulation.pyx":85
  * 					#sell
  * 					if pos < -max_pos:
  * 						continue             # <<<<<<<<<<<<<<
@@ -1667,7 +1678,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
           goto __pyx_L4_continue;
 
-          /* "simulation.pyx":79
+          /* "simulation.pyx":84
  * 				elif actions[i] == 2:
  * 					#sell
  * 					if pos < -max_pos:             # <<<<<<<<<<<<<<
@@ -1676,7 +1687,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         }
 
-        /* "simulation.pyx":82
+        /* "simulation.pyx":87
  * 						continue
  * 					#res += self.low_train[i]
  * 					pos -= 1             # <<<<<<<<<<<<<<
@@ -1685,7 +1696,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         __pyx_v_pos = (__pyx_v_pos - 1);
 
-        /* "simulation.pyx":83
+        /* "simulation.pyx":88
  * 					#res += self.low_train[i]
  * 					pos -= 1
  * 					deals += 1             # <<<<<<<<<<<<<<
@@ -1694,7 +1705,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         __pyx_v_deals = (__pyx_v_deals + 1);
 
-        /* "simulation.pyx":77
+        /* "simulation.pyx":82
  * 					deals += 1
  * 
  * 				elif actions[i] == 2:             # <<<<<<<<<<<<<<
@@ -1706,7 +1717,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
       __pyx_L4_continue:;
     }
 
-    /* "simulation.pyx":86
+    /* "simulation.pyx":91
  * 
  * 
  * 			price = (self.close_train[self.SIZE_TRAIN - 1])             # <<<<<<<<<<<<<<
@@ -1715,7 +1726,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
     __pyx_v_price = (__pyx_v_self->close_train[(__pyx_v_self->SIZE_TRAIN - 1)]);
 
-    /* "simulation.pyx":92
+    /* "simulation.pyx":97
  * 				res += pos*price'''
  * 
  * 			deals += abs(pos)             # <<<<<<<<<<<<<<
@@ -1725,7 +1736,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
     __pyx_t_6 = __Pyx_abs_int(__pyx_v_pos); 
     __pyx_v_deals = (__pyx_v_deals + __pyx_t_6);
 
-    /* "simulation.pyx":59
+    /* "simulation.pyx":64
  * 			double res_arr[2]
  * 
  * 		if mode == 'train':             # <<<<<<<<<<<<<<
@@ -1735,17 +1746,17 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
     goto __pyx_L3;
   }
 
-  /* "simulation.pyx":94
+  /* "simulation.pyx":99
  * 			deals += abs(pos)
  * 
  * 		elif mode == 'test':             # <<<<<<<<<<<<<<
  * 			for i in xrange(1,self.SIZE_TEST):
  * 
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_test, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_test, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_1) {
 
-    /* "simulation.pyx":95
+    /* "simulation.pyx":100
  * 
  * 		elif mode == 'test':
  * 			for i in xrange(1,self.SIZE_TEST):             # <<<<<<<<<<<<<<
@@ -1756,7 +1767,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
     for (__pyx_t_3 = 1; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "simulation.pyx":97
+      /* "simulation.pyx":102
  * 			for i in xrange(1,self.SIZE_TEST):
  * 
  * 				delta_price = (self.low_test[i] + self.high_test[i])/2.0 - (self.low_test[i-1] + self.high_test[i-1])/2.0             # <<<<<<<<<<<<<<
@@ -1765,7 +1776,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
       __pyx_v_delta_price = ((((__pyx_v_self->low_test[__pyx_v_i]) + (__pyx_v_self->high_test[__pyx_v_i])) / 2.0) - (((__pyx_v_self->low_test[(__pyx_v_i - 1)]) + (__pyx_v_self->high_test[(__pyx_v_i - 1)])) / 2.0));
 
-      /* "simulation.pyx":98
+      /* "simulation.pyx":103
  * 
  * 				delta_price = (self.low_test[i] + self.high_test[i])/2.0 - (self.low_test[i-1] + self.high_test[i-1])/2.0
  * 				delta_pos = pos - prev_pos             # <<<<<<<<<<<<<<
@@ -1774,7 +1785,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
       __pyx_v_delta_pos = (__pyx_v_pos - __pyx_v_prev_pos);
 
-      /* "simulation.pyx":99
+      /* "simulation.pyx":104
  * 				delta_price = (self.low_test[i] + self.high_test[i])/2.0 - (self.low_test[i-1] + self.high_test[i-1])/2.0
  * 				delta_pos = pos - prev_pos
  * 				res += delta_pos*delta_price             # <<<<<<<<<<<<<<
@@ -1783,7 +1794,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
       __pyx_v_res = (__pyx_v_res + (__pyx_v_delta_pos * __pyx_v_delta_price));
 
-      /* "simulation.pyx":101
+      /* "simulation.pyx":106
  * 				res += delta_pos*delta_price
  * 
  * 				prev_pos = pos             # <<<<<<<<<<<<<<
@@ -1792,23 +1803,23 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
       __pyx_v_prev_pos = __pyx_v_pos;
 
-      /* "simulation.pyx":103
+      /* "simulation.pyx":108
  * 				prev_pos = pos
  * 
  * 				if actions[i] == 1:             # <<<<<<<<<<<<<<
  * 					#buy
  * 					if pos > max_pos:
  */
-      __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_actions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_actions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = __Pyx_PyInt_EqObjC(__pyx_t_4, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __Pyx_PyInt_EqObjC(__pyx_t_4, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       if (__pyx_t_1) {
 
-        /* "simulation.pyx":105
+        /* "simulation.pyx":110
  * 				if actions[i] == 1:
  * 					#buy
  * 					if pos > max_pos:             # <<<<<<<<<<<<<<
@@ -1818,19 +1829,19 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
         __pyx_t_1 = ((__pyx_v_pos > __pyx_v_max_pos) != 0);
         if (__pyx_t_1) {
 
-          /* "simulation.pyx":106
+          /* "simulation.pyx":111
  * 					#buy
  * 					if pos > max_pos:
  * 						self.results[i] = res             # <<<<<<<<<<<<<<
  * 						continue
  * 
  */
-          __pyx_t_5 = PyFloat_FromDouble(__pyx_v_res); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_5 = PyFloat_FromDouble(__pyx_v_res); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_5);
-          if (unlikely(__Pyx_SetItemInt(__pyx_v_self->results, __pyx_v_i, __pyx_t_5, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          if (unlikely(__Pyx_SetItemInt(__pyx_v_self->results, __pyx_v_i, __pyx_t_5, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-          /* "simulation.pyx":107
+          /* "simulation.pyx":112
  * 					if pos > max_pos:
  * 						self.results[i] = res
  * 						continue             # <<<<<<<<<<<<<<
@@ -1839,7 +1850,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
           goto __pyx_L9_continue;
 
-          /* "simulation.pyx":105
+          /* "simulation.pyx":110
  * 				if actions[i] == 1:
  * 					#buy
  * 					if pos > max_pos:             # <<<<<<<<<<<<<<
@@ -1848,7 +1859,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         }
 
-        /* "simulation.pyx":110
+        /* "simulation.pyx":115
  * 
  * 					#res -= self.high_train[i]
  * 					pos += 1             # <<<<<<<<<<<<<<
@@ -1857,7 +1868,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         __pyx_v_pos = (__pyx_v_pos + 1);
 
-        /* "simulation.pyx":111
+        /* "simulation.pyx":116
  * 					#res -= self.high_train[i]
  * 					pos += 1
  * 					deals += 1             # <<<<<<<<<<<<<<
@@ -1866,7 +1877,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         __pyx_v_deals = (__pyx_v_deals + 1);
 
-        /* "simulation.pyx":103
+        /* "simulation.pyx":108
  * 				prev_pos = pos
  * 
  * 				if actions[i] == 1:             # <<<<<<<<<<<<<<
@@ -1876,23 +1887,23 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
         goto __pyx_L11;
       }
 
-      /* "simulation.pyx":113
+      /* "simulation.pyx":118
  * 					deals += 1
  * 
  * 				elif actions[i] == 2:             # <<<<<<<<<<<<<<
  * 					#sell
  * 					if pos < -max_pos:
  */
-      __pyx_t_5 = __Pyx_GetItemInt(__pyx_v_actions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __pyx_t_5 = __Pyx_GetItemInt(__pyx_v_actions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_t_5, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_t_5, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_1) {
 
-        /* "simulation.pyx":115
+        /* "simulation.pyx":120
  * 				elif actions[i] == 2:
  * 					#sell
  * 					if pos < -max_pos:             # <<<<<<<<<<<<<<
@@ -1902,19 +1913,19 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
         __pyx_t_1 = ((__pyx_v_pos < (-__pyx_v_max_pos)) != 0);
         if (__pyx_t_1) {
 
-          /* "simulation.pyx":116
+          /* "simulation.pyx":121
  * 					#sell
  * 					if pos < -max_pos:
  * 						self.results[i] = res             # <<<<<<<<<<<<<<
  * 						continue
  * 
  */
-          __pyx_t_4 = PyFloat_FromDouble(__pyx_v_res); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyFloat_FromDouble(__pyx_v_res); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
-          if (unlikely(__Pyx_SetItemInt(__pyx_v_self->results, __pyx_v_i, __pyx_t_4, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          if (unlikely(__Pyx_SetItemInt(__pyx_v_self->results, __pyx_v_i, __pyx_t_4, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-          /* "simulation.pyx":117
+          /* "simulation.pyx":122
  * 					if pos < -max_pos:
  * 						self.results[i] = res
  * 						continue             # <<<<<<<<<<<<<<
@@ -1923,7 +1934,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
           goto __pyx_L9_continue;
 
-          /* "simulation.pyx":115
+          /* "simulation.pyx":120
  * 				elif actions[i] == 2:
  * 					#sell
  * 					if pos < -max_pos:             # <<<<<<<<<<<<<<
@@ -1932,7 +1943,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         }
 
-        /* "simulation.pyx":120
+        /* "simulation.pyx":125
  * 
  * 					#res += self.low_train[i]
  * 					pos -= 1             # <<<<<<<<<<<<<<
@@ -1941,7 +1952,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         __pyx_v_pos = (__pyx_v_pos - 1);
 
-        /* "simulation.pyx":121
+        /* "simulation.pyx":126
  * 					#res += self.low_train[i]
  * 					pos -= 1
  * 					deals += 1             # <<<<<<<<<<<<<<
@@ -1950,7 +1961,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
         __pyx_v_deals = (__pyx_v_deals + 1);
 
-        /* "simulation.pyx":113
+        /* "simulation.pyx":118
  * 					deals += 1
  * 
  * 				elif actions[i] == 2:             # <<<<<<<<<<<<<<
@@ -1960,21 +1971,21 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
       }
       __pyx_L11:;
 
-      /* "simulation.pyx":123
+      /* "simulation.pyx":128
  * 					deals += 1
  * 
  * 				self.results[i] = res             # <<<<<<<<<<<<<<
  * 
  * 			price = (self.close_test[self.SIZE_TEST - 1])
  */
-      __pyx_t_4 = PyFloat_FromDouble(__pyx_v_res); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = PyFloat_FromDouble(__pyx_v_res); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_self->results, __pyx_v_i, __pyx_t_4, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_self->results, __pyx_v_i, __pyx_t_4, int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_L9_continue:;
     }
 
-    /* "simulation.pyx":125
+    /* "simulation.pyx":130
  * 				self.results[i] = res
  * 
  * 			price = (self.close_test[self.SIZE_TEST - 1])             # <<<<<<<<<<<<<<
@@ -1983,34 +1994,17 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  */
     __pyx_v_price = (__pyx_v_self->close_test[(__pyx_v_self->SIZE_TEST - 1)]);
 
-    /* "simulation.pyx":131
+    /* "simulation.pyx":136
  * 				res += pos*price'''
  * 
  * 			deals += abs(pos)             # <<<<<<<<<<<<<<
- * 			self.results[0:i].tofile('results.txt')
+ * 			#self.results[0:i].tofile('results/results_' + filename + '_' + mode + '.txt')
  * 
  */
     __pyx_t_6 = __Pyx_abs_int(__pyx_v_pos); 
     __pyx_v_deals = (__pyx_v_deals + __pyx_t_6);
 
-    /* "simulation.pyx":132
- * 
- * 			deals += abs(pos)
- * 			self.results[0:i].tofile('results.txt')             # <<<<<<<<<<<<<<
- * 
- * 		return [res,deals]
- */
-    __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_v_self->results, 0, __pyx_v_i, NULL, NULL, NULL, 1, 1, 1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_tofile); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-    /* "simulation.pyx":94
+    /* "simulation.pyx":99
  * 			deals += abs(pos)
  * 
  * 		elif mode == 'test':             # <<<<<<<<<<<<<<
@@ -2020,19 +2014,19 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
   }
   __pyx_L3:;
 
-  /* "simulation.pyx":134
- * 			self.results[0:i].tofile('results.txt')
+  /* "simulation.pyx":139
+ * 			#self.results[0:i].tofile('results/results_' + filename + '_' + mode + '.txt')
  * 
  * 		return [res,deals]             # <<<<<<<<<<<<<<
  * 
  * 	def run_simulation(self, mode, actions, max_pos = 10):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_res); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 134; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_res); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_deals); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 134; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_deals); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = PyList_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 134; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = PyList_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_4);
   PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
@@ -2044,7 +2038,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
   __pyx_t_7 = 0;
   goto __pyx_L0;
 
-  /* "simulation.pyx":47
+  /* "simulation.pyx":52
  * 		self.load_prices_cython(filename, mode)
  * 
  * 	cdef run_simulation_cython(self, mode, actions, int max_pos):             # <<<<<<<<<<<<<<
@@ -2065,7 +2059,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
   return __pyx_r;
 }
 
-/* "simulation.pyx":136
+/* "simulation.pyx":141
  * 		return [res,deals]
  * 
  * 	def run_simulation(self, mode, actions, max_pos = 10):             # <<<<<<<<<<<<<<
@@ -2107,7 +2101,7 @@ static PyObject *__pyx_pw_10simulation_10Simulation_5run_simulation(PyObject *__
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_actions)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("run_simulation", 0, 2, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("run_simulation", 0, 2, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 141; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (kw_args > 0) {
@@ -2116,7 +2110,7 @@ static PyObject *__pyx_pw_10simulation_10Simulation_5run_simulation(PyObject *__
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "run_simulation") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "run_simulation") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 141; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2133,7 +2127,7 @@ static PyObject *__pyx_pw_10simulation_10Simulation_5run_simulation(PyObject *__
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("run_simulation", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("run_simulation", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 141; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("simulation.Simulation.run_simulation", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2157,29 +2151,32 @@ static PyObject *__pyx_pf_10simulation_10Simulation_4run_simulation(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("run_simulation", 0);
 
-  /* "simulation.pyx":137
+  /* "simulation.pyx":142
  * 
  * 	def run_simulation(self, mode, actions, max_pos = 10):
  * 		res_arr = self.run_simulation_cython(mode, actions, max_pos)             # <<<<<<<<<<<<<<
  * 		return res_arr
+ * 
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_max_pos); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_2 = ((struct __pyx_vtabstruct_10simulation_Simulation *)__pyx_v_self->__pyx_vtab)->run_simulation_cython(__pyx_v_self, __pyx_v_mode, __pyx_v_actions, __pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_max_pos); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((struct __pyx_vtabstruct_10simulation_Simulation *)__pyx_v_self->__pyx_vtab)->run_simulation_cython(__pyx_v_self, __pyx_v_mode, __pyx_v_actions, __pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_res_arr = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "simulation.pyx":138
+  /* "simulation.pyx":143
  * 	def run_simulation(self, mode, actions, max_pos = 10):
  * 		res_arr = self.run_simulation_cython(mode, actions, max_pos)
  * 		return res_arr             # <<<<<<<<<<<<<<
+ * 
+ * 	def get_buy_and_hold(self):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_res_arr);
   __pyx_r = __pyx_v_res_arr;
   goto __pyx_L0;
 
-  /* "simulation.pyx":136
+  /* "simulation.pyx":141
  * 		return [res,deals]
  * 
  * 	def run_simulation(self, mode, actions, max_pos = 10):             # <<<<<<<<<<<<<<
@@ -2194,6 +2191,79 @@ static PyObject *__pyx_pf_10simulation_10Simulation_4run_simulation(struct __pyx
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_res_arr);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "simulation.pyx":145
+ * 		return res_arr
+ * 
+ * 	def get_buy_and_hold(self):             # <<<<<<<<<<<<<<
+ * 		return [self.buy_and_hold_train, self.buy_and_hold_test]
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10simulation_10Simulation_7get_buy_and_hold(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_10simulation_10Simulation_7get_buy_and_hold(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_buy_and_hold (wrapper)", 0);
+  __pyx_r = __pyx_pf_10simulation_10Simulation_6get_buy_and_hold(((struct __pyx_obj_10simulation_Simulation *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10simulation_10Simulation_6get_buy_and_hold(struct __pyx_obj_10simulation_Simulation *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("get_buy_and_hold", 0);
+
+  /* "simulation.pyx":146
+ * 
+ * 	def get_buy_and_hold(self):
+ * 		return [self.buy_and_hold_train, self.buy_and_hold_test]             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->buy_and_hold_train); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->buy_and_hold_test); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyList_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyList_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyList_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "simulation.pyx":145
+ * 		return res_arr
+ * 
+ * 	def get_buy_and_hold(self):             # <<<<<<<<<<<<<<
+ * 		return [self.buy_and_hold_train, self.buy_and_hold_test]
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("simulation.Simulation.get_buy_and_hold", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -2248,6 +2318,7 @@ static int __pyx_tp_clear_10simulation_Simulation(PyObject *o) {
 static PyMethodDef __pyx_methods_10simulation_Simulation[] = {
   {"load_prices", (PyCFunction)__pyx_pw_10simulation_10Simulation_3load_prices, METH_VARARGS|METH_KEYWORDS, 0},
   {"run_simulation", (PyCFunction)__pyx_pw_10simulation_10Simulation_5run_simulation, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_buy_and_hold", (PyCFunction)__pyx_pw_10simulation_10Simulation_7get_buy_and_hold, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
@@ -2356,13 +2427,11 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_read_csv, __pyx_k_read_csv, sizeof(__pyx_k_read_csv), 0, 0, 1, 1},
-  {&__pyx_kp_s_results_txt, __pyx_k_results_txt, sizeof(__pyx_k_results_txt), 0, 0, 1, 0},
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
   {&__pyx_n_s_size_test, __pyx_k_size_test, sizeof(__pyx_k_size_test), 0, 0, 1, 1},
   {&__pyx_n_s_size_train, __pyx_k_size_train, sizeof(__pyx_k_size_train), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_test_2, __pyx_k_test_2, sizeof(__pyx_k_test_2), 0, 0, 1, 1},
-  {&__pyx_n_s_tofile, __pyx_k_tofile, sizeof(__pyx_k_tofile), 0, 0, 1, 1},
   {&__pyx_n_s_train, __pyx_k_train, sizeof(__pyx_k_train), 0, 0, 1, 1},
   {&__pyx_n_s_vol, __pyx_k_vol, sizeof(__pyx_k_vol), 0, 0, 1, 1},
   {&__pyx_n_s_xrange, __pyx_k_xrange, sizeof(__pyx_k_xrange), 0, 0, 1, 1},
@@ -2371,9 +2440,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 };
 static int __Pyx_InitCachedBuiltins(void) {
   #if PY_MAJOR_VERSION >= 3
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #else
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
   return 0;
   __pyx_L1_error:;
@@ -2384,30 +2453,19 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "simulation.pyx":35
+  /* "simulation.pyx":37
  * 		else:
  * 			self.SIZE_TEST = features.shape[0]
  * 			self.results = np.zeros((200000,),dtype = np.float32)             # <<<<<<<<<<<<<<
  * 
  * 			for i in xrange(self.SIZE_TEST):
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_int_200000); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_int_200000); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_tuple_); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_tuple_); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-
-  /* "simulation.pyx":132
- * 
- * 			deals += abs(pos)
- * 			self.results[0:i].tofile('results.txt')             # <<<<<<<<<<<<<<
- * 
- * 		return [res,deals]
- */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_results_txt); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_tuple__3);
-  __Pyx_GIVEREF(__pyx_tuple__3);
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3241,103 +3299,6 @@ static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObje
     }
 #endif
     return __Pyx_SetItemInt_Generic(o, PyInt_FromSsize_t(i), v);
-}
-
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(PyObject* obj,
-        Py_ssize_t cstart, Py_ssize_t cstop,
-        PyObject** _py_start, PyObject** _py_stop, PyObject** _py_slice,
-        int has_cstart, int has_cstop, CYTHON_UNUSED int wraparound) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    PyMappingMethods* mp;
-#if PY_MAJOR_VERSION < 3
-    PySequenceMethods* ms = Py_TYPE(obj)->tp_as_sequence;
-    if (likely(ms && ms->sq_slice)) {
-        if (!has_cstart) {
-            if (_py_start && (*_py_start != Py_None)) {
-                cstart = __Pyx_PyIndex_AsSsize_t(*_py_start);
-                if ((cstart == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
-            } else
-                cstart = 0;
-        }
-        if (!has_cstop) {
-            if (_py_stop && (*_py_stop != Py_None)) {
-                cstop = __Pyx_PyIndex_AsSsize_t(*_py_stop);
-                if ((cstop == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
-            } else
-                cstop = PY_SSIZE_T_MAX;
-        }
-        if (wraparound && unlikely((cstart < 0) | (cstop < 0)) && likely(ms->sq_length)) {
-            Py_ssize_t l = ms->sq_length(obj);
-            if (likely(l >= 0)) {
-                if (cstop < 0) {
-                    cstop += l;
-                    if (cstop < 0) cstop = 0;
-                }
-                if (cstart < 0) {
-                    cstart += l;
-                    if (cstart < 0) cstart = 0;
-                }
-            } else {
-                if (PyErr_ExceptionMatches(PyExc_OverflowError))
-                    PyErr_Clear();
-                else
-                    goto bad;
-            }
-        }
-        return ms->sq_slice(obj, cstart, cstop);
-    }
-#endif
-    mp = Py_TYPE(obj)->tp_as_mapping;
-    if (likely(mp && mp->mp_subscript))
-#endif
-    {
-        PyObject* result;
-        PyObject *py_slice, *py_start, *py_stop;
-        if (_py_slice) {
-            py_slice = *_py_slice;
-        } else {
-            PyObject* owned_start = NULL;
-            PyObject* owned_stop = NULL;
-            if (_py_start) {
-                py_start = *_py_start;
-            } else {
-                if (has_cstart) {
-                    owned_start = py_start = PyInt_FromSsize_t(cstart);
-                    if (unlikely(!py_start)) goto bad;
-                } else
-                    py_start = Py_None;
-            }
-            if (_py_stop) {
-                py_stop = *_py_stop;
-            } else {
-                if (has_cstop) {
-                    owned_stop = py_stop = PyInt_FromSsize_t(cstop);
-                    if (unlikely(!py_stop)) {
-                        Py_XDECREF(owned_start);
-                        goto bad;
-                    }
-                } else
-                    py_stop = Py_None;
-            }
-            py_slice = PySlice_New(py_start, py_stop, Py_None);
-            Py_XDECREF(owned_start);
-            Py_XDECREF(owned_stop);
-            if (unlikely(!py_slice)) goto bad;
-        }
-#if CYTHON_COMPILING_IN_CPYTHON
-        result = mp->mp_subscript(obj, py_slice);
-#else
-        result = PyObject_GetItem(obj, py_slice);
-#endif
-        if (!_py_slice) {
-            Py_DECREF(py_slice);
-        }
-        return result;
-    }
-    PyErr_Format(PyExc_TypeError,
-        "'%.200s' object is unsliceable", Py_TYPE(obj)->tp_name);
-bad:
-    return NULL;
 }
 
 static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
