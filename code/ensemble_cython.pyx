@@ -21,14 +21,14 @@ from simulation import Simulation
 from calc_features import calc_features
 
 
-TICKER = 'US2.'
-INSTRUMENT = 'AAPL'
+TICKER = ''
+INSTRUMENT = 'LKOH'
 NUM_FEATURES=50
 PATH = 'features/'
 MAX_POS=5
-PERIOD_TRAIN = ('100101','150101')
+PERIOD_TRAIN = ('130101','150101')
 PERIOD_TEST = ('150101','160101')
-FREQUENCY = '1hour'
+FREQUENCY = '10minutes'
 MAX_PERIOD_LENGTH = 200000
 ###############################################################################################
 
@@ -87,7 +87,13 @@ cdef class evolution(object):
 		self.GENOM_LENGTH = self.NUM_TREES
 		print self.files
 		
-		self.results = np.zeros((200000,2), dtype = np.float32)
+		self.results = np.zeros((self.NUM_GENERATIONS,6), dtype=np.float32)
+		results_ = np.fromfile('results/results_' + INSTRUMENT + '_' + FREQUENCY + '_' + str(self.depth + 1) + '.txt',dtype = np.float32)
+		results_ = results_.reshape(results_.shape[0]/6,6) 
+		self.results[0:results_.shape[0],:] = results_
+		self.results[:,4] = self.results[results_.shape[0]-1, 4]
+		self.results[:,5] = self.results[results_.shape[0]-1, 5]
+		
 		self.weights = <int *>malloc(self.GENOM_LENGTH * sizeof(int))
 		self.predictions_train = <int *>malloc(self.features_train.shape[0] * self.NUM_TREES * sizeof(int))
 		self.predictions_test = <int *>malloc(self.features_test.shape[0] * self.NUM_TREES * sizeof(int))
@@ -137,29 +143,30 @@ cdef class evolution(object):
 		for i in xrange(self.NUM_GENERATIONS):
 			print "NUM GENERATION %d" % (i)
 			self.create_new_generation()
-			if self.MUTATION_PROB > 0.05:
-				self.MUTATION_PROB -= 0.01
+			#if self.MUTATION_PROB > 0.05:
+			self.MUTATION_PROB *= 1.01
 			
 			test_score = self.calc_score(0, mode = 'test')
 			print 'TEST SCORE %d' % (test_score)
 			
-			self.results[i, 0] = self.generation_scores[0]
-			self.results[i, 1] = test_score
-			print self.results
+			if i < self.results.shape[0]:
+				self.results[i, 0] = self.generation_scores[0]
+				self.results[i, 1] = test_score
+				#print self.results
 
-		self.results[0:i, :].tofile('results/results_ensemble_' + INSTRUMENT + '_' + FREQUENCY + '.txt')
+		self.results[0:i, :].tofile('results/results_ensemble_' + INSTRUMENT + '_' + FREQUENCY + '_' + str(self.depth+1) + '.txt')
 
 		for i in xrange(self.THRESHOLD):
 			print self.generation_scores[i],' ',
 		print '\n'
 
 		
-
 	def read_trees(self):
 
 		for path in self.PATH:
 			
-			path = path + INSTRUMENT + '/' + FREQUENCY + '/'
+			path = path + INSTRUMENT + '/' + FREQUENCY + '/' + str(self.depth+1) + '/'
+
 			self.files = [f for f in listdir(path) if isfile(join(path, f))]
 			self.files=sorted(self.files)
 
@@ -341,7 +348,7 @@ cdef class evolution(object):
 			result, deals = self.simulation.run_simulation(mode = mode, actions = actions, max_pos = self.MAX_POS)
 
 
-		return result + np.random.uniform(0,1)
+		return result + np.random.uniform(0,0.1)
 
 	def read_features_period(self, period_start, period_end, mode):
 		global PATH, TICKER, INSTRUMENT, FREQUENCY
@@ -379,8 +386,8 @@ def main():
 
 	actions = np.zeros((200000,), dtype=np.int32)
 	
-	evo  = evolution(tree_depth=3, num_classes=3, generation_size=100, num_generations=10, keep_alive=10.0/50, verbose=True, 
-		mutation_prob=0.05,max_weight=2,folder=['trees/'])
+	evo  = evolution(tree_depth=9, num_classes=3, generation_size=50, num_generations=20, keep_alive=10.0/50, verbose=True, 
+		mutation_prob=0.05,max_weight=10,folder=['trees/'])
 	evo.finish()
 
 #import cProfile

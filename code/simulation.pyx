@@ -66,7 +66,7 @@ cdef class Simulation(object):
 				
 				delta_price = (self.low_train[i] + self.high_train[i])/2.0 - (self.low_train[i-1] + self.high_train[i-1])/2.0
 				delta_pos = pos - prev_pos
-				res += delta_pos*delta_price
+				res += (delta_pos*delta_price)
 				
 				prev_pos = pos
 
@@ -101,7 +101,7 @@ cdef class Simulation(object):
 
 				delta_price = (self.low_test[i] + self.high_test[i])/2.0 - (self.low_test[i-1] + self.high_test[i-1])/2.0
 				delta_pos = pos - prev_pos
-				res += delta_pos*delta_price
+				res += (delta_pos*delta_price)
 				
 				prev_pos = pos
 
@@ -136,7 +136,7 @@ cdef class Simulation(object):
 			deals += abs(pos)
 			#self.results[0:i].tofile('results/results_' + filename + '_' + mode + '.txt')
 
-		return [res,deals]
+		return [res - 0.02*deals,deals]
 
 	def run_simulation(self, mode, actions, max_pos = 10):
 		res_arr = self.run_simulation_cython(mode, actions, max_pos)

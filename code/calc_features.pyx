@@ -18,12 +18,12 @@ cdef:
 	int SIZE
 	double EPS = 0.00000001
 
-	vector[double*] features
-	double open_arr[2000000]
-	double close_arr[2000000]
-	double high_arr[2000000]
-	double low_arr[2000000]
-	double vol_arr[2000000]
+	vector[vector[double]] features
+	double open_arr[20000000]
+	double close_arr[20000000]
+	double high_arr[20000000]
+	double low_arr[20000000]
+	double vol_arr[20000000]
 	int periods[3]
 
 periods[:] = [10,60,240]
@@ -33,6 +33,7 @@ cdef void read_features(filename):
 	cdef:
 		int i
 
+	print filename
 	features = pd.read_csv(filename)
 	print features
 	del features['<TICKER>']
@@ -51,7 +52,7 @@ cdef void read_features(filename):
 		vol_arr[i] = features.vol[i]
 	print features
 
-cdef double mean(double *arr, int s, int f):
+cdef double mean_vector(vector[double] arr, int s, int f):
 	cdef:
 		int i, n = f-s
 		double sum_ = 0.0
@@ -59,7 +60,15 @@ cdef double mean(double *arr, int s, int f):
 		sum_ += arr[i]
 	return sum_/n
 
-cdef double stdev(double *arr, int s, int f):
+cdef double mean_arr(double* arr, int s, int f):
+	cdef:
+		int i, n = f-s
+		double sum_ = 0.0
+	for i in xrange(s,f):
+		sum_ += arr[i]
+	return sum_/n
+
+cdef double stdev(double* arr, int s, int f):
 	cdef:
 		int i, n = f-s
 		double std = 0.0, mean = 0.0
@@ -73,7 +82,7 @@ cdef double stdev(double *arr, int s, int f):
 	std = sqrt(std/(n-1))
 	return std
 
-cdef double max(double *arr, int s, int f):
+cdef double max(double* arr, int s, int f):
 	cdef:
 		int i
 		double max_ = -1000000000
@@ -83,7 +92,14 @@ cdef double max(double *arr, int s, int f):
 	
 	return max_
 
-cdef double min(double *arr, int s, int f):
+cdef double max_three(double a, double b, double c):
+	if a>=b and a>=c:
+		return a
+	if b>=a and b>=c:
+		return b
+	return c
+
+cdef double min(double* arr, int s, int f):
 	cdef:
 		int i
 		double min_ = 1000000000
@@ -123,11 +139,12 @@ cdef void calc_features_cython(filename):
 		
 	print SIZE
 	for p in xrange(PERIODS*NUM_FEATURES_DEP + NUM_FEATURES_INDEP):
-		features.push_back(<double *>malloc(SIZE * sizeof(double)))		
+		features.push_back(vector[double]())
+		for q in xrange(SIZE):
+			features[p].push_back(0.0)		
 		
 	for i in xrange(SIZE): 
-		if i%1000==0:
-			print i
+		print i
 
 		#print i
 		for j in xrange(NUM_FEATURES_INDEP + NUM_FEATURES_DEP*PERIODS):
@@ -148,7 +165,7 @@ cdef void calc_features_cython(filename):
 			low = low_arr[i]
 			vol = vol_arr[i]
 			
-			sma = mean(close_arr, i-t, i+1)
+			sma = mean_arr(close_arr, i-t, i+1)
 			smas[j] = sma
 			std = stdev(close_arr, i-t, i+1)
 			highest_high = max(high_arr, i-t, i+1)
@@ -156,23 +173,23 @@ cdef void calc_features_cython(filename):
 			
 			#print close, vol, highest_high, lowest_low ,t, close_prev, high, low, open_
 			
-			true_range[i] = np.max([high - low, high - close_prev, close_prev - low])
+			true_range[i] = max_three(high - low, high - close_prev, close_prev - low)
 			if i>=t:
 				
 				features[NUM_FEATURES_INDEP + q][i] = (close - close_arr[i-t]) / (close_arr[i-t] + EPS) #proc
 				features[NUM_FEATURES_INDEP + 1 + q][i] = (vol - vol_arr[i-t]) / (vol_arr[i-t] + EPS) #vroc
 				features[NUM_FEATURES_INDEP + 2 + q][i] = close_arr[i-t] - close          #momentum
 				features[NUM_FEATURES_INDEP + 3 + q][i] = features[NUM_FEATURES_INDEP + 2 + q][i-t] - features[NUM_FEATURES_INDEP + 2 + q][i] #Price acceleration
-				features[NUM_FEATURES_INDEP + 4 + q][i] = mean(true_range, i-t, i+1) / close #natr
+				features[NUM_FEATURES_INDEP + 4 + q][i] = mean_arr(true_range, i-t, i+1) / close #natr
 				
 				features[NUM_FEATURES_INDEP + 5 + q][i] = -100*((highest_high - close) / (highest_high - lowest_low + EPS)) #williams %r
 
 				features[NUM_FEATURES_INDEP + 6 + q][i] = features[NUM_FEATURES_INDEP + 6 + q][i-1] + vol * sign(close - close_prev) #OBV
 				
 				features[NUM_FEATURES_INDEP + 7 + q][i] = ((close - lowest_low) / (highest_high - lowest_low + EPS))*100 #stoch
-				features[NUM_FEATURES_INDEP + 8 + q][i] = mean(features[NUM_FEATURES_INDEP + 7 + q], i-t, i+1) #F%K
-				features[NUM_FEATURES_INDEP + 9 + q][i] = mean(features[NUM_FEATURES_INDEP + 8 + q], i-3, i+1) #S%K
-				features[NUM_FEATURES_INDEP + 10 + q][i] = mean(features[NUM_FEATURES_INDEP + 9 + q], i-3, i+1) #S%D
+				features[NUM_FEATURES_INDEP + 8 + q][i] = mean_vector(features[NUM_FEATURES_INDEP + 7 + q], i-t, i+1) #F%K
+				features[NUM_FEATURES_INDEP + 9 + q][i] = mean_vector(features[NUM_FEATURES_INDEP + 8 + q], i-3, i+1) #S%K
+				features[NUM_FEATURES_INDEP + 10 + q][i] = mean_vector(features[NUM_FEATURES_INDEP + 9 + q], i-3, i+1) #S%D
 				
 				features[NUM_FEATURES_INDEP + 11 + q][i] = std / sqrt(<double>(t)) #volatility
 				

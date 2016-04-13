@@ -1540,7 +1540,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  * 
  * 				delta_price = (self.low_train[i] + self.high_train[i])/2.0 - (self.low_train[i-1] + self.high_train[i-1])/2.0             # <<<<<<<<<<<<<<
  * 				delta_pos = pos - prev_pos
- * 				res += delta_pos*delta_price
+ * 				res += (delta_pos*delta_price)
  */
       __pyx_v_delta_price = ((((__pyx_v_self->low_train[__pyx_v_i]) + (__pyx_v_self->high_train[__pyx_v_i])) / 2.0) - (((__pyx_v_self->low_train[(__pyx_v_i - 1)]) + (__pyx_v_self->high_train[(__pyx_v_i - 1)])) / 2.0));
 
@@ -1548,7 +1548,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  * 
  * 				delta_price = (self.low_train[i] + self.high_train[i])/2.0 - (self.low_train[i-1] + self.high_train[i-1])/2.0
  * 				delta_pos = pos - prev_pos             # <<<<<<<<<<<<<<
- * 				res += delta_pos*delta_price
+ * 				res += (delta_pos*delta_price)
  * 
  */
       __pyx_v_delta_pos = (__pyx_v_pos - __pyx_v_prev_pos);
@@ -1556,14 +1556,14 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
       /* "simulation.pyx":69
  * 				delta_price = (self.low_train[i] + self.high_train[i])/2.0 - (self.low_train[i-1] + self.high_train[i-1])/2.0
  * 				delta_pos = pos - prev_pos
- * 				res += delta_pos*delta_price             # <<<<<<<<<<<<<<
+ * 				res += (delta_pos*delta_price)             # <<<<<<<<<<<<<<
  * 
  * 				prev_pos = pos
  */
       __pyx_v_res = (__pyx_v_res + (__pyx_v_delta_pos * __pyx_v_delta_price));
 
       /* "simulation.pyx":71
- * 				res += delta_pos*delta_price
+ * 				res += (delta_pos*delta_price)
  * 
  * 				prev_pos = pos             # <<<<<<<<<<<<<<
  * 
@@ -1772,7 +1772,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  * 
  * 				delta_price = (self.low_test[i] + self.high_test[i])/2.0 - (self.low_test[i-1] + self.high_test[i-1])/2.0             # <<<<<<<<<<<<<<
  * 				delta_pos = pos - prev_pos
- * 				res += delta_pos*delta_price
+ * 				res += (delta_pos*delta_price)
  */
       __pyx_v_delta_price = ((((__pyx_v_self->low_test[__pyx_v_i]) + (__pyx_v_self->high_test[__pyx_v_i])) / 2.0) - (((__pyx_v_self->low_test[(__pyx_v_i - 1)]) + (__pyx_v_self->high_test[(__pyx_v_i - 1)])) / 2.0));
 
@@ -1780,7 +1780,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
  * 
  * 				delta_price = (self.low_test[i] + self.high_test[i])/2.0 - (self.low_test[i-1] + self.high_test[i-1])/2.0
  * 				delta_pos = pos - prev_pos             # <<<<<<<<<<<<<<
- * 				res += delta_pos*delta_price
+ * 				res += (delta_pos*delta_price)
  * 
  */
       __pyx_v_delta_pos = (__pyx_v_pos - __pyx_v_prev_pos);
@@ -1788,14 +1788,14 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
       /* "simulation.pyx":104
  * 				delta_price = (self.low_test[i] + self.high_test[i])/2.0 - (self.low_test[i-1] + self.high_test[i-1])/2.0
  * 				delta_pos = pos - prev_pos
- * 				res += delta_pos*delta_price             # <<<<<<<<<<<<<<
+ * 				res += (delta_pos*delta_price)             # <<<<<<<<<<<<<<
  * 
  * 				prev_pos = pos
  */
       __pyx_v_res = (__pyx_v_res + (__pyx_v_delta_pos * __pyx_v_delta_price));
 
       /* "simulation.pyx":106
- * 				res += delta_pos*delta_price
+ * 				res += (delta_pos*delta_price)
  * 
  * 				prev_pos = pos             # <<<<<<<<<<<<<<
  * 
@@ -2017,12 +2017,12 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
   /* "simulation.pyx":139
  * 			#self.results[0:i].tofile('results/results_' + filename + '_' + mode + '.txt')
  * 
- * 		return [res,deals]             # <<<<<<<<<<<<<<
+ * 		return [res - 0.02*deals,deals]             # <<<<<<<<<<<<<<
  * 
  * 	def run_simulation(self, mode, actions, max_pos = 10):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_res); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyFloat_FromDouble((__pyx_v_res - (0.02 * __pyx_v_deals))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_deals); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
@@ -2060,7 +2060,7 @@ static PyObject *__pyx_f_10simulation_10Simulation_run_simulation_cython(struct 
 }
 
 /* "simulation.pyx":141
- * 		return [res,deals]
+ * 		return [res - 0.02*deals,deals]
  * 
  * 	def run_simulation(self, mode, actions, max_pos = 10):             # <<<<<<<<<<<<<<
  * 		res_arr = self.run_simulation_cython(mode, actions, max_pos)
@@ -2177,7 +2177,7 @@ static PyObject *__pyx_pf_10simulation_10Simulation_4run_simulation(struct __pyx
   goto __pyx_L0;
 
   /* "simulation.pyx":141
- * 		return [res,deals]
+ * 		return [res - 0.02*deals,deals]
  * 
  * 	def run_simulation(self, mode, actions, max_pos = 10):             # <<<<<<<<<<<<<<
  * 		res_arr = self.run_simulation_cython(mode, actions, max_pos)

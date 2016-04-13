@@ -17,13 +17,13 @@ from calc_features import calc_features
 
 
 TICKER = ''
-INSTRUMENT = 'SANDP-500'
+INSTRUMENT = 'LKOH'
 NUM_FEATURES=50
 PATH = 'features/'
 MAX_POS=5
-PERIOD_TRAIN = ('100101','150101')
+PERIOD_TRAIN = ('130101','150101')
 PERIOD_TEST = ('150101','160101')
-FREQUENCY = '1hour'
+FREQUENCY = '10minutes'
 MAX_PERIOD_LENGTH = 200000
 
 ###############################################################################################
@@ -32,12 +32,12 @@ class evolution():
 
     def __init__(self, tree_depth, num_classes, generation_size, num_generations,keep_alive, feature_change_prob, sign_change_prob, quantile_bias,verbose,class_change_prob,trees_path):
 
-        self.TREES_PATH = trees_path + INSTRUMENT +  '/' + FREQUENCY + '/'
+        self.TREES_PATH = trees_path + INSTRUMENT +  '/' + FREQUENCY + '/' + str(tree_depth) + '/'
         if not os.path.exists(self.TREES_PATH):
             os.makedirs(self.TREES_PATH)
         
-        self.random_train_result = 0
-        self.random_test_result = 0
+        self.random_train_result = -10000
+        self.random_test_result = -10000
 
         self.depth = tree_depth - 1
         
@@ -60,7 +60,7 @@ class evolution():
         self.NUM_FEATURES = self.features_train.shape[1]
         
         self.percentiles = np.zeros((self.NUM_FEATURES, 101), dtype = np.float32)
-        self.results = np.zeros((200000,2),dtype = np.float32)
+        self.results = np.zeros((200000,6),dtype = np.float32)
 
         for i in xrange(self.NUM_FEATURES):
             for j in xrange(101):
@@ -86,15 +86,23 @@ class evolution():
             print 'BEST TEST RANDOM SCORE: %d' % (self.random_test_result)
             print 'BUY_AND_HOLD ', self.buy_and_hold
 
-            self.results[i, 0] = self.generation_scores[0]
-            self.results[i, 1] = test_score
+            self.results[i, 4] = self.generation_scores[0]
+            self.results[i, 5] = test_score
+            self.results[i, 0] = self.random_train_result
+            self.results[i, 1] = self.random_test_result
+            self.results[i, 2:4] = self.buy_and_hold
             print self.results[i,:]
 
-        self.results[0:i, :].tofile('results/results_' + INSTRUMENT + '_' + FREQUENCY + '.txt')
+            self.SIGN_CHANGE_PROB *= 1.01
+            self.QUANTILE_BIAS *= 1.01
+            self.FEATURE_CHANGE_PROB *= 1.01
+            self.CLASS_CHANGE_PROB *= 1.01
+
+        self.results[0:i, :].tofile('results/results_' + INSTRUMENT + '_' + FREQUENCY + '_' + str(self.depth + 1) + '.txt')
 
         for i in xrange(self.THRESHOLD):
             print self.generation_scores[i],' ',
-            self.generation[i].write_to_file(self.TREES_PATH+'tree_'+str(i)+'_'+str(int(self.generation_scores[0])))
+            self.generation[i].write_to_file(self.TREES_PATH+'tree_'+str(i)+'_'+str(int(self.generation_scores[i])))
         
         print '\n'
 
@@ -340,7 +348,7 @@ def main():
 
     actions = np.zeros((200000,), dtype=np.int32)
         
-    evo=evolution(tree_depth=3, num_classes=3, generation_size=50, num_generations=200, keep_alive=20.0/50, 
+    evo=evolution(tree_depth=9, num_classes=3, generation_size=100, num_generations=20, keep_alive=10.0/50, 
             feature_change_prob=0.3, sign_change_prob=0.3, class_change_prob=0.2,quantile_bias=30, verbose=False,trees_path='trees/')
 
 #import cProfile
