@@ -17,12 +17,12 @@ from calc_features import calc_features
 
 
 TICKER = ''
-INSTRUMENT = 'LKOH'
+INSTRUMENT = 'RTS'
 NUM_FEATURES=50
 PATH = 'features/'
 MAX_POS=5
-PERIOD_TRAIN = ('130101','150101')
-PERIOD_TEST = ('150101','160101')
+PERIOD_TRAIN = ('120101','140101')
+PERIOD_TEST = ('140101','160101')
 FREQUENCY = '10minutes'
 MAX_PERIOD_LENGTH = 200000
 
@@ -30,7 +30,7 @@ MAX_PERIOD_LENGTH = 200000
 
 class evolution():
 
-    def __init__(self, tree_depth, num_classes, generation_size, num_generations,keep_alive, feature_change_prob, sign_change_prob, quantile_bias,verbose,class_change_prob,trees_path):
+    def __init__(self, tree_depth, num_classes, generation_size, num_generations,keep_alive, feature_change_prob, sign_change_prob, quantile_bias,verbose,class_change_prob,trees_path, comi):
 
         self.TREES_PATH = trees_path + INSTRUMENT +  '/' + FREQUENCY + '/' + str(tree_depth) + '/'
         if not os.path.exists(self.TREES_PATH):
@@ -40,7 +40,8 @@ class evolution():
         self.random_test_result = -10000
 
         self.depth = tree_depth - 1
-        
+        self.comis = comi
+
         self.VERBOSE = verbose
         self.NUM_CLASSES = num_classes
         self.MAX_POS = 1
@@ -287,7 +288,7 @@ class evolution():
                 obj = self.features_train[i, :]
                 actions[i] = tree.predict(obj)
                 #print actions[i]
-            result, deals = self.simulation.run_simulation(mode = 'train', actions = actions, max_pos = self.MAX_POS)
+            result, deals = self.simulation.run_simulation(mode = 'train', actions = actions, max_pos = self.MAX_POS, comis = self.comis)
             
         if mode == 'test':
             
@@ -296,7 +297,7 @@ class evolution():
                 obj = self.features_test[i, :]
                 actions[i] = tree.predict(obj)
 
-            result, deals = self.simulation.run_simulation(mode = 'test', actions = actions, max_pos = self.MAX_POS)
+            result, deals = self.simulation.run_simulation(mode = 'test', actions = actions, max_pos = self.MAX_POS, comis = self.comis)
         
         print 'result = %f, deals = %d' % (result, deals)
 
@@ -307,16 +308,16 @@ class evolution():
         global actions,results
 
 
-        for q in xrange(1000):        
+        for q in xrange(10):        
             for i in xrange(self.features_train.shape[0]):
                 actions[i] = np.random.randint(0,3)
-            result, deals = self.simulation.run_simulation(mode = 'train', actions = actions, max_pos = self.MAX_POS)     
+            result, deals = self.simulation.run_simulation(mode = 'train', actions = actions, max_pos = self.MAX_POS, comis = self.comis)     
             print q,result
             self.random_train_result = max(self.random_train_result, result)
             
             for i in xrange(self.features_test.shape[0]):
                 actions[i] = np.random.randint(0,3)
-            result, deals = self.simulation.run_simulation(mode = 'test', actions = actions, max_pos = self.MAX_POS)
+            result, deals = self.simulation.run_simulation(mode = 'test', actions = actions, max_pos = self.MAX_POS, comis = self.comis)
             self.random_test_result = max(self.random_test_result, result)
             
        
@@ -342,15 +343,37 @@ class evolution():
             self.features_test = features_day
         
 
-def main():
+def main(depth, comi):
 
     global features, instrument, actions,results
 
     actions = np.zeros((200000,), dtype=np.int32)
         
-    evo=evolution(tree_depth=9, num_classes=3, generation_size=100, num_generations=20, keep_alive=10.0/50, 
-            feature_change_prob=0.3, sign_change_prob=0.3, class_change_prob=0.2,quantile_bias=30, verbose=False,trees_path='trees/')
+    evo=evolution(tree_depth=depth, num_classes=3, generation_size=100, num_generations=10, keep_alive=10.0/50, 
+            feature_change_prob=0.3, sign_change_prob=0.3, class_change_prob=0.2,quantile_bias=30, verbose=False,trees_path='trees/', comi = comi)
 
 #import cProfile
 #cProfile.run('main()')
-main()
+periods = ['10minutes','1hour','1day']
+instruments = ['GAZP','LKOH','SPFB.RTS','SBER','SPFB.MIX']
+#instruments = ['GE','NASDAQ.AAPL','XOM','NASDAQ.GOOG','C','DSX','NQ-100-FUT']
+#instruments = ['XOM','NASDAQ.GOOG','C','DSX','NQ-100-FUT']
+#comis = [0.01 for x in xrange(5)]
+comis = [0.000035 for x in xrange(len(instruments))]
+
+
+#instruments = ['US1.GE','US1.XOM','US2.AAPL']
+
+depths = [3,6]
+for i in xrange(len(instruments)):
+    instr = instruments[i]
+    comi = comis[i]
+
+    INSTRUMENT = instr
+    for period in periods:
+        FREQUENCY = period
+       
+        for d in depths:
+            main(d, comi)
+
+

@@ -26,8 +26,8 @@ INSTRUMENT = 'LKOH'
 NUM_FEATURES=50
 PATH = 'features/'
 MAX_POS=5
-PERIOD_TRAIN = ('130101','150101')
-PERIOD_TEST = ('150101','160101')
+PERIOD_TRAIN = ('120101','140101')
+PERIOD_TEST = ('140101','160101')
 FREQUENCY = '10minutes'
 MAX_PERIOD_LENGTH = 200000
 ###############################################################################################
@@ -45,6 +45,7 @@ cdef class evolution(object):
 		int GENOM_LENGTH
 		int NUM_TREES
 		int MAX_POS
+		int COMI
 		double MUTATION_PROB
 		int* predictions_train
 		int*  predictions_test
@@ -57,7 +58,7 @@ cdef class evolution(object):
 	cdef public:
 		trees, X, generation, generation_scores, PATH, files
 
-	def __init__(self, tree_depth, num_classes, keep_alive, generation_size, num_generations,verbose, mutation_prob, max_weight,folder):
+	def __init__(self, tree_depth, num_classes, keep_alive, generation_size, num_generations,verbose, mutation_prob, max_weight,folder, comi):
 
 		self.depth = tree_depth - 1
 		
@@ -65,7 +66,7 @@ cdef class evolution(object):
 		self.NUM_CLASSES = num_classes
 		
 		self.MAX_POS = 1
-		
+		self.COMI = comi
 		self.MAX_WEIGHT = max_weight
 		self.PATH = folder
 		#evolution parameters
@@ -326,7 +327,7 @@ cdef class evolution(object):
 				#if actions[i]!=0:
 				#	print votes[0],votes[1],votes[2],actions[i]
 
-			result, deals = self.simulation.run_simulation(mode = mode, actions = actions, max_pos = self.MAX_POS)
+			result, deals = self.simulation.run_simulation(mode = mode, actions = actions, max_pos = self.MAX_POS, comis = self.COMI)
 			#print result, deals
 		
 		elif mode == 'test':
@@ -345,7 +346,7 @@ cdef class evolution(object):
 				#if actions[i]!=0:
 				#	print votes[0],votes[1],votes[2],actions[i]
 
-			result, deals = self.simulation.run_simulation(mode = mode, actions = actions, max_pos = self.MAX_POS)
+			result, deals = self.simulation.run_simulation(mode = mode, actions = actions, max_pos = self.MAX_POS, comis = self.COMI)
 
 
 		return result + np.random.uniform(0,0.1)
@@ -381,19 +382,32 @@ cdef class evolution(object):
 		except Exception:
 			pass
 
-def main():
+def main(depth, comi):
 	global features, instrument, actions
 
 	actions = np.zeros((200000,), dtype=np.int32)
 	
-	evo  = evolution(tree_depth=9, num_classes=3, generation_size=50, num_generations=20, keep_alive=10.0/50, verbose=True, 
-		mutation_prob=0.05,max_weight=10,folder=['trees/'])
+	evo  = evolution(tree_depth=depth, num_classes=3, generation_size=100, num_generations=20, keep_alive=10.0/50, verbose=True, 
+		mutation_prob=0.05,max_weight=10,folder=['trees/'], comi = comi)
 	evo.finish()
 
 #import cProfile
 #cProfile.run('main()')
-main()
+periods = ['10minutes','1hour','1day']
+instruments = ['GAZP','LKOH','SPFB.RTS','SBER','SPFB.MIX']
+instruments = ['GE','NASDAQ.AAPL','XOM','NASDAQ.GOOG','C','DSX','NQ-100-FUT']
+#instruments = ['XOM','NASDAQ.GOOG','C','DSX','NQ-100-FUT']
+#instruments = ['GAZP','LKOH','SPFB.RTS','SBER','SPFB.MIX']
 
-#tree=Tree(max_depth=4, num_classes=3, num_features=50)
-#tree.read_tree('trees/tree_0_-1094')
-#tree.print_tree()
+comis = [0.000035 for x in xrange(len(instruments))]
+depths = [3,6]
+for i in xrange(len(instruments)):
+	instr = instruments[i]
+	comi = comis[i]
+	INSTRUMENT = instr
+	
+	for period in periods:
+		FREQUENCY = period
+		
+		for d in depths:
+			main(d, comi)

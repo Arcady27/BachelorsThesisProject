@@ -36,11 +36,23 @@ cdef void read_features(filename):
 	print filename
 	features = pd.read_csv(filename)
 	print features
-	del features['<TICKER>']
-	del features['<PER>'] 
-	del features['<DATE>'] 
-	del features['<TIME>'] 
-
+	try:
+		del features['<TICKER>']
+	except Exception:
+		print 'no TICKER column'
+	try:
+		del features['<PER>']
+	except Exception:
+		print 'no PER column'
+	try:
+		del features['<DATE>']
+	except Exception:
+		print 'no DATE column'
+	try:
+		del features['<TIME>']
+	except Exception:
+		print 'no TIME column'
+	
 	features.columns = ['open','high','low','close','vol']
 	SIZE = features.shape[0]
 	print SIZE

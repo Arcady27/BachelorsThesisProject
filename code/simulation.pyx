@@ -17,10 +17,22 @@ cdef class Simulation(object):
 
 	cdef void load_prices_cython(self, filename, mode):
 		features = pd.read_csv(filename)
-		del features['<TICKER>']
-		del features['<PER>'] 
-		del features['<DATE>'] 
-		del features['<TIME>'] 
+		try:
+			del features['<TICKER>']
+		except Exception:
+			print 'no TICKER column'
+		try:
+			del features['<PER>']
+		except Exception:
+			print 'no PER column'
+		try:
+			del features['<DATE>']
+		except Exception:
+			print 'no DATE column'
+		try:
+			del features['<TIME>']
+		except Exception:
+			print 'no TIME column'
 
 		features.columns = ['open','high','low','close','vol']
 		
@@ -49,7 +61,7 @@ cdef class Simulation(object):
 	def load_prices(self,filename, mode):
 		self.load_prices_cython(filename, mode)
 
-	cdef run_simulation_cython(self, mode, actions, int max_pos):
+	cdef run_simulation_cython(self, mode, actions, int max_pos, double comis):
 		cdef:
 			int i
 			int pos = 0
@@ -59,6 +71,7 @@ cdef class Simulation(object):
 			int deals = 0
 			double price
 			double res = 0.0
+			double total_comis = 0.0
 			double res_arr[2]
 
 		if mode == 'train':
@@ -66,7 +79,7 @@ cdef class Simulation(object):
 				
 				delta_price = (self.low_train[i] + self.high_train[i])/2.0 - (self.low_train[i-1] + self.high_train[i-1])/2.0
 				delta_pos = pos - prev_pos
-				res += (delta_pos*delta_price)
+				res += pos*delta_price
 				
 				prev_pos = pos
 
@@ -101,7 +114,7 @@ cdef class Simulation(object):
 
 				delta_price = (self.low_test[i] + self.high_test[i])/2.0 - (self.low_test[i-1] + self.high_test[i-1])/2.0
 				delta_pos = pos - prev_pos
-				res += (delta_pos*delta_price)
+				res += pos*delta_price
 				
 				prev_pos = pos
 
@@ -114,6 +127,7 @@ cdef class Simulation(object):
 					#res -= self.high_train[i]
 					pos += 1
 					deals += 1
+					total_comis += comis*(self.low_test[i] + self.high_test[i])/2.0
 
 				elif actions[i] == 2:
 					#sell
@@ -124,6 +138,7 @@ cdef class Simulation(object):
 					#res += self.low_train[i]
 					pos -= 1
 					deals += 1
+					total_comis += comis*(self.low_test[i] + self.high_test[i])/2.0
 
 				self.results[i] = res
 
@@ -136,10 +151,10 @@ cdef class Simulation(object):
 			deals += abs(pos)
 			#self.results[0:i].tofile('results/results_' + filename + '_' + mode + '.txt')
 
-		return [res - 0.02*deals,deals]
+		return [res - total_comis, deals]
 
-	def run_simulation(self, mode, actions, max_pos = 10):
-		res_arr = self.run_simulation_cython(mode, actions, max_pos)
+	def run_simulation(self, mode, actions, max_pos , comis):
+		res_arr = self.run_simulation_cython(mode, actions, max_pos, comis)
 		return res_arr
 
 	def get_buy_and_hold(self):
