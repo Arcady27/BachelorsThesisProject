@@ -387,17 +387,15 @@ def main(depth, comi):
 
 	actions = np.zeros((200000,), dtype=np.int32)
 	
-	evo  = evolution(tree_depth=depth, num_classes=3, generation_size=100, num_generations=20, keep_alive=10.0/50, verbose=True, 
+	evo  = evolution(tree_depth=depth, num_classes=3, generation_size=100, num_generations=10, keep_alive=10.0/50, verbose=True, 
 		mutation_prob=0.05,max_weight=10,folder=['trees/'], comi = comi)
 	evo.finish()
 
 #import cProfile
 #cProfile.run('main()')
 periods = ['10minutes','1hour','1day']
-instruments = ['GAZP','LKOH','SPFB.RTS','SBER','SPFB.MIX']
-instruments = ['GE','NASDAQ.AAPL','XOM','NASDAQ.GOOG','C','DSX','NQ-100-FUT']
-#instruments = ['XOM','NASDAQ.GOOG','C','DSX','NQ-100-FUT']
-#instruments = ['GAZP','LKOH','SPFB.RTS','SBER','SPFB.MIX']
+instruments = ['GAZP','LKOH','SBER','SPFB.MIX','SPFB.RTS','MICEX','RTSI','GE','NASDAQ.AAPL','XOM','NASDAQ.GOOG','NY.MSFT',
+               'C','DSX','JPM','WMT','NQ-100-FUT','SP500']
 
 comis = [0.000035 for x in xrange(len(instruments))]
 depths = [3,6]

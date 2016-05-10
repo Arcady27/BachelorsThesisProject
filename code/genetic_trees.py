@@ -357,8 +357,8 @@ def main(depth, comi):
 periods = ['10minutes','1hour','1day']
 instruments = ['GAZP','LKOH','SPFB.RTS','SBER','SPFB.MIX']
 #instruments = ['GE','NASDAQ.AAPL','XOM','NASDAQ.GOOG','C','DSX','NQ-100-FUT']
-#instruments = ['XOM','NASDAQ.GOOG','C','DSX','NQ-100-FUT']
-#comis = [0.01 for x in xrange(5)]
+instruments = ['MICEX','RTSI','JPM','WMT','SP500']
+instruments = ['C']
 comis = [0.000035 for x in xrange(len(instruments))]
 
 
